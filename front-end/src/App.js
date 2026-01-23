@@ -1,146 +1,38 @@
-import { useState, useEffect } from 'react';
-import './App.css';
-import Formulario from './Formulario';
-import Tabela from './Tabela';
+import './styles/App.css';
+import Formulario from './pages/Formulario';
+import Tabela from './pages/Tabela';
+import { useProdutos } from './hooks/UseProdutos';
 
 function App() {
 
-  // Objeto produto
-  const produto = {
-    id: '',
-    nome: '',
-    marca: ''
-  }
+  const {
+    produtos,
+    produto,
+    modoCadastro,
+    selecionar,
+    limpar,
+    cadastrar,
+    alterar,
+    remover,
+    aoDigitar
+  } = useProdutos();
 
-  // Use State para controlar o estado do botão
-  const [btnCadastrar, setBtnCadastrar] = useState(true);
-
-  // Use State para armazenar a lista de produtos
-  const [produtos, setProdutos] = useState([]);
-
-  // Use State para armazenar o objeto produto
-  const [objProduto, setObjProduto] = useState(produto);
-
-  //User Effect para carregar a lista de produtos ao iniciar o componente
-  useEffect(() => {
-    fetch('http://localhost:8080/listarTodos')
-      .then(retorno => retorno.json())
-      .then(retorno_convertido => setProdutos(retorno_convertido))
-  }, []);
-
-  // Obtendo os dados do formulário
-  const aoDigitar = (e) => {
-    setObjProduto({ ...objProduto, [e.target.name]: e.target.value });
-  }
-
-  // Cadastrar produto
-  const cadastrar = () => {
-    fetch('http://localhost:8080/cadastrar', {
-      method: 'post',
-      body: JSON.stringify(objProduto),
-      headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json'
-      }
-    })
-      .then(retorno => retorno.json())
-      .then(retorno_convertido => {
-
-        if (retorno_convertido.mensagem !== undefined) {
-          alert(retorno_convertido.mensagem);
-        } else {
-          setProdutos([...produtos, retorno_convertido]);
-          alert('Produto cadastrado com sucesso!');
-          limparFormulario();
-        }
-
-      });
-  };
-
-  // Alterar produto
-  const alterar = () => {
-    fetch('http://localhost:8080/atualizar/' + objProduto.id, {
-      method: 'PUT',
-      body: JSON.stringify(objProduto),
-      headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json'
-      }
-    })
-      .then(retorno => retorno.json())
-      .then(retorno_convertido => {
-
-        if (retorno_convertido.mensagem !== undefined) {
-          alert(retorno_convertido.mensagem);
-        } else {
-
-          // Atualizar produto na lista
-          const vetorTemp = produtos.map(p =>
-            p.id === retorno_convertido.id ? retorno_convertido : p
-          );
-
-          setProdutos(vetorTemp);
-
-          alert('Produto alterado com sucesso!');
-
-          limparFormulario();
-          setBtnCadastrar(true);
-        }
-      });
-  };
-
-  // Remover produto
-  const remover = () => {
-    fetch('http://localhost:8080/remover/' + objProduto.id, {
-      method: 'delete',
-      headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json'
-      }
-    })
-      .then(retorno => retorno.json())
-      .then(retorno_convertido => {
-
-        // Mensagem 
-        alert(retorno_convertido.mensagem);
-
-        // Atualizar a lista
-        let vetorTemp = [...produtos];
-
-        // Índice
-        let indice = vetorTemp.findIndex((p) => {
-          return p.id === objProduto.id;
-        });
-
-        // Remover o produto do vetorTemp
-        vetorTemp.splice(indice, 1);
-
-        // Atualizar o vetor de produtos
-        setProdutos(vetorTemp);
-
-        // Limpar o formulário
-        limparFormulario();
-
-      });
-  };
-
-  // Limpar formulário
-  const limparFormulario = () => {
-    setObjProduto(produto);
-    setBtnCadastrar(true);
-  };
-
-  // Selecionar produto
-  const selecionarProduto = (indice) => {
-    setObjProduto(produtos[indice]);
-    setBtnCadastrar(false);
-  }
-
-  // Retorno
   return (
     <div className="App">
-      <Formulario botao={btnCadastrar} eventoTeclado={aoDigitar} cadastrar={cadastrar} obj={objProduto} cancelar={limparFormulario} remover={remover} alterar={alterar} />
-      <Tabela vetor={produtos} selecionar={selecionarProduto} />
+      <Formulario
+        botao={modoCadastro}
+        obj={produto}
+        eventoTeclado={aoDigitar}
+        cadastrar={cadastrar}
+        alterar={alterar}
+        remover={remover}
+        cancelar={limpar}
+      />
+
+      <Tabela
+        vetor={produtos}
+        selecionar={selecionar}
+      />
     </div>
   );
 }
