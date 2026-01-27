@@ -38,6 +38,10 @@ public class UserService {
             throw new RuntimeException("As senhas não conferem");
         }
 
+        if (ur.findByEmail(dto.getEmail()).isPresent()) {
+            throw new RuntimeException("Esse email já está cadastrado.");
+        }
+
         UserModel user = new UserModel();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());

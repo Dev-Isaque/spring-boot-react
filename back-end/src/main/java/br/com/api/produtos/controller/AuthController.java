@@ -15,7 +15,7 @@ import br.com.api.produtos.service.AuthService;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
 
     @Autowired
