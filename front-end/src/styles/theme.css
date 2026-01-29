@@ -6,6 +6,18 @@ body,
   padding: 0;
 }
 
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   color-scheme: light;
 

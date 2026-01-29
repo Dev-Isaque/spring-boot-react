@@ -2,7 +2,7 @@ import Formulario from "./Formulario";
 import Tabela from "./Tabela";
 import { useProdutos } from "../hooks/UseProdutos";
 
-function Home() {
+function HomeUm() {
   const {
     produtos,
     produto,
@@ -32,4 +32,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default HomeUm;
