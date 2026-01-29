@@ -1,43 +1,48 @@
-import "../../styles/auth.css";
 import { Link } from "react-router-dom";
-import Logo from "../../assets/images/logo.png";
-import { AlternateTheme } from "../../components/AlternateTheme";
 import { useAuth } from "../../hooks/UseAuth";
 import { useState } from "react";
+import { Button } from "../../components/Button";
+import { AuthLayout } from "../../components/layouts/AuthLayout";
+import { Spinner } from "../../components/Spinner";
 
 function Login() {
   const { login, user, setUser } = useAuth();
   const [mensagem, setMensagem] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setUser((prev) => ({ ...(prev || {}), [name]: value }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setMensagem("");
 
-    const r = await login();
-
-    if (!r.sucesso) {
-      setMensagem(r.mensagem);
+    if (!user?.email?.trim() || !user?.password?.trim()) {
+      setMensagem("Preencha email e senha.");
       return;
     }
+
+    setLoading(true);
+
+    const r = await login();
+
+    setTimeout(() => {
+      setLoading(false);
+
+      if (!r.sucesso) {
+        setMensagem(r.mensagem);
+      }
+    }, 800);
   }
 
   return (
-    <div className="auth-page">
-      <form className="auth-card" onSubmit={handleSubmit}>
-        <div className="auth-theme-toggle">
-          <AlternateTheme />
-        </div>
-
-        <div className="auth-header">
-          <img src={Logo} alt="Logo" className="auth-logo" />
-          <h3>Bem-vindo de volta!</h3>
-          <p>Faça login para continuar</p>
-        </div>
-
+    <AuthLayout
+      title="Bem-vindo de volta!"
+      subtitle="Faça login para continuar"
+    >
+      <form onSubmit={handleSubmit}>
         <div className="auth-inputs">
           <div className="auth-field">
             <label>Email</label>
@@ -46,7 +51,7 @@ function Login() {
               name="email"
               className="form-control auth-input"
               placeholder="Digite seu email"
-              value={user.email}
+              value={user?.email || ""}
               onChange={handleChange}
             />
           </div>
@@ -58,7 +63,7 @@ function Login() {
               name="password"
               className="form-control auth-input"
               placeholder="Digite sua senha"
-              value={user.password}
+              value={user?.password || ""}
               onChange={handleChange}
             />
           </div>
@@ -68,16 +73,18 @@ function Login() {
           <p>
             Esqueceu sua senha? <Link to="/reset">Redefinir</Link>
           </p>
-
           <p>
             Não tem conta? <Link to="/register">Cadastre-se aqui</Link>
           </p>
         </div>
 
-        <button className="auth-btn">Login</button>
+        <Button type="submit" className="auth-btn" disabled={loading}>
+          {loading ? <Spinner /> : "Login"}
+        </Button>
+
         {mensagem && <p className="auth-error">{mensagem}</p>}
       </form>
-    </div>
+    </AuthLayout>
   );
 }
 

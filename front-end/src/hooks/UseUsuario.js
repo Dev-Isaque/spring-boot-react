@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userVazio } from "../models/User";
-import { cadastrar as cadastrarApi } from "../services/UserService";
+import { cadastrar as cadastrarApi } from "../services/userService";
 
 export function useUsuario() {
     const navigate = useNavigate();

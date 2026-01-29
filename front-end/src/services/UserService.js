@@ -1,4 +1,4 @@
-import { apiRequest } from "./ApiService";
+import { apiRequest } from "./apiService";
 
 export const cadastrar = (user) => {
     return apiRequest("/users/cadastrar", {

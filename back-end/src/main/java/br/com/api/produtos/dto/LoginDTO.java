@@ -1,13 +1,15 @@
 package br.com.api.produtos.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public class LoginDTO {
 
-    @NotBlank
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email inválido")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Senha é obrigatória")
     private String password;
 
     public LoginDTO() {

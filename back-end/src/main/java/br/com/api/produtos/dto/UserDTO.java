@@ -8,14 +8,14 @@ public class UserDTO {
     @NotBlank
     private String name;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email inválido")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Senha é obrigatória")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "Confirmação de senha é obrigatória")
     private String password_confirm;
 
     public UserDTO() {

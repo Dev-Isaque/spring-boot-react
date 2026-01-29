@@ -1,7 +1,7 @@
-import "../../styles/auth.css";
 import { Link } from "react-router-dom";
-import Logo from "../../assets/images/logo.png";
-import { AlternateTheme } from "../../components/AlternateTheme";
+import { Button } from "../../components/Button";
+import { Spinner } from "../../components/Spinner";
+import { AuthLayout } from "../../components/layouts/AuthLayout";
 
 import { useUsuario } from "../../hooks/UseUsuario";
 import { useState } from "react";
@@ -9,6 +9,7 @@ import { useState } from "react";
 export function Register() {
   const { cadastrar, user, setUser } = useUsuario();
   const [mensagem, setMensagem] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -16,29 +17,31 @@ export function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setMensagem("");
 
-    const resposta = await cadastrar();
-
-    if (!resposta.sucesso) {
-      setMensagem(resposta.mensagem);
+    if (!user?.email?.trim() || !user?.password?.trim()) {
+      setMensagem("Preencha email e senha.");
       return;
     }
 
-    alert("Usuário cadastrado com sucesso!");
+    setLoading(true);
+
+    const r = await cadastrar();
+
+    setTimeout(() => {
+      setLoading(false);
+
+      if (!r.sucesso) {
+        setMensagem(r.mensagem);
+      }
+
+      alert("Usuário cadastrado com sucesso!");
+    }, 800);
   }
 
   return (
-    <div className="auth-page">
-      <form className="auth-card" onSubmit={handleSubmit}>
-        <div className="auth-theme-toggle">
-          <AlternateTheme />
-        </div>
-
-        <div className="auth-header">
-          <img src={Logo} alt="Logo" className="auth-logo" />
-          <h3>Registre-se</h3>
-        </div>
-
+    <AuthLayout title="Registre-se">
+      <form onSubmit={handleSubmit}>
         <div className="auth-inputs">
           <div className="auth-field">
             <label>Nome</label>
@@ -95,13 +98,13 @@ export function Register() {
           </p>
         </div>
 
-        <button type="submit" className="auth-btn">
-          Registrar
-        </button>
+        <Button type="submit" className="auth-btn" disabled={loading}>
+          {loading ? <Spinner /> : "Registrar"}
+        </Button>
 
         {mensagem && <p className="auth-error">{mensagem}</p>}
       </form>
-    </div>
+    </AuthLayout>
   );
 }
 

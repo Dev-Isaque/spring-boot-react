@@ -5,7 +5,7 @@ import {
     cadastrarProduto,
     atualizarProduto,
     removerProduto
-} from '../services/ProdutoService';
+} from '../services/produtoService';
 
 export function useProdutos() {
 

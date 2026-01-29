@@ -1,19 +1,15 @@
-import "../../styles/auth.css";
 import { Link } from "react-router-dom";
-import Logo from "../../assets/images/logo.png";
-import { AlternateTheme } from "../../components/AlternateTheme";
+import { Button } from "../../components/Button";
+import { Spinner } from "../../components/Spinner";
+import { AuthLayout } from "../../components/layouts/AuthLayout";
+
+import { useUsuario } from "../../hooks/UseUsuario";
+import { useState } from "react";
 
 function Reset() {
   return (
-    <div className="auth-page">
-      <form className="auth-card">
-        <div className="auth-theme-toggle">
-          <AlternateTheme />
-        </div>
-        <div className="auth-header">
-          <img src={Logo} alt="Logo" className="auth-logo" />
-          <h3>Recuperar Senha</h3>
-        </div>
+    <AuthLayout title="Recuperar Senha">
+      <form>
         <div className="auth-inputs">
           <div className="auth-field">
             <label htmlFor="email">Email</label>
@@ -48,14 +44,8 @@ function Reset() {
             />
           </div>
         </div>
-        <div className="auth-footer">
-          <p>
-            Fazer Login: <Link to="/login">Entre aqui</Link>
-          </p>
-        </div>
-        <button className="auth-btn">Registrar</button>
       </form>
-    </div>
+    </AuthLayout>
   );
 }
 
