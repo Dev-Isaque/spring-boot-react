@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "../../components/Button";
 import { AuthLayout } from "../../components/layouts/AuthLayout";
 import { Spinner } from "../../components/Spinner";
+import { Input } from "../../components/Input";
 
 function Login() {
   const { login, user, setUser } = useAuth();
@@ -44,29 +45,23 @@ function Login() {
     >
       <form onSubmit={handleSubmit}>
         <div className="auth-inputs">
-          <div className="auth-field">
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-control auth-input"
-              placeholder="Digite seu email"
-              value={user?.email || ""}
-              onChange={handleChange}
-            />
-          </div>
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            placeholder="Digite seu email"
+            value={user?.email || ""}
+            onChange={handleChange}
+          />
 
-          <div className="auth-field">
-            <label>Senha</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control auth-input"
-              placeholder="Digite sua senha"
-              value={user?.password || ""}
-              onChange={handleChange}
-            />
-          </div>
+          <Input
+            label="Senha"
+            type="password"
+            name="password"
+            placeholder="Digite sua senha"
+            value={user?.password || ""}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="auth-footer">

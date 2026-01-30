@@ -2,48 +2,38 @@ import { Link } from "react-router-dom";
 import { Button } from "../../components/Button";
 import { Spinner } from "../../components/Spinner";
 import { AuthLayout } from "../../components/layouts/AuthLayout";
-
-import { useUsuario } from "../../hooks/UseUsuario";
-import { useState } from "react";
+import { Input } from "../../components/Input";
 
 function Reset() {
   return (
     <AuthLayout title="Recuperar Senha">
       <form>
         <div className="auth-inputs">
-          <div className="auth-field">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              className="form-control auth-input"
-              placeholder="Digite seu email"
-            />
-          </div>
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            placeholder="Digite seu email"
+          />
 
-          <div className="auth-field">
-            <label htmlFor="password">Senha</label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              className="form-control auth-input"
-              placeholder="Digite sua senha"
-            />
-          </div>
+          <Input
+            label="Senha"
+            type="password"
+            name="password"
+            placeholder="Digite sua senha"
+          />
 
-          <div className="auth-field">
-            <label htmlFor="password_confirm">Confirmar senha</label>
-            <input
-              id="password_confirm"
-              type="password"
-              name="password_confirm"
-              className="form-control auth-input"
-              placeholder="Confirme sua senha"
-            />
-          </div>
+          <Input
+            label="Confirmar senha"
+            type="password"
+            name="password_confirm"
+            placeholder="Confirme sua senha"
+          />
         </div>
+
+        <Button type="submit" className="btn-primary w-100 mt-3">
+          Recuperar senha
+        </Button>
       </form>
     </AuthLayout>
   );

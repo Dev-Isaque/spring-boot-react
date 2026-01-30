@@ -43,53 +43,41 @@ export function Register() {
     <AuthLayout title="Registre-se">
       <form onSubmit={handleSubmit}>
         <div className="auth-inputs">
-          <div className="auth-field">
-            <label>Nome</label>
-            <input
-              type="text"
-              name="name"
-              className="form-control auth-input"
-              placeholder="Digite seu nome"
-              value={user.name}
-              onChange={handleChange}
-            />
-          </div>
+          <Input
+            label="Nome"
+            type="text"
+            name="name"
+            placeholder="Digite seu nome"
+            value={user?.name || ""}
+            onChange={handleChange}
+          />
 
-          <div className="auth-field">
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-control auth-input"
-              placeholder="Digite seu email"
-              value={user.email}
-              onChange={handleChange}
-            />
-          </div>
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            placeholder="Digite seu email"
+            value={user?.email || ""}
+            onChange={handleChange}
+          />
 
-          <div className="auth-field">
-            <label>Senha</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control auth-input"
-              placeholder="Digite sua senha"
-              value={user.password}
-              onChange={handleChange}
-            />
-          </div>
+          <Input
+            label="Senha"
+            type="password"
+            name="password"
+            placeholder="Digite sua senha"
+            value={user?.password || ""}
+            onChange={handleChange}
+          />
 
-          <div className="auth-field">
-            <label>Confirmar senha</label>
-            <input
-              type="password"
-              name="password_confirm"
-              className="form-control auth-input"
-              placeholder="Confirme sua senha"
-              value={user.password_confirm}
-              onChange={handleChange}
-            />
-          </div>
+          <Input
+            label="Confirmar senha"
+            type="password"
+            name="password_confirm"
+            placeholder="Confirme sua senha"
+            value={user?.password_confirm || ""}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="auth-footer">

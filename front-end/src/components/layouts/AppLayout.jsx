@@ -1,15 +1,65 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { AppSidebar } from "../AppSidebar";
-import "../../styles/theme.css";
-import "../../styles/tasks.css";
-import "../../styles/sidebar.css";
+import { Menu, X } from "lucide-react";
 
-export function AppLayout({ children }) {
+import "../../styles/tasks.css";
+
+import { Topbar } from "../Topbar";
+import { Sidebar } from "../Sidebar";
+import { Button } from "../Button";
+
+export function AppLayout() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  function openSidebar() {
+    setSidebarOpen(true);
+  }
+
+  function closeSidebar() {
+    setSidebarOpen(false);
+  }
+
   return (
     <div className="app-shell">
-      <AppSidebar />
+      <div className="d-none d-lg-block">
+        <Sidebar />
+      </div>
 
-      <main className="app-content">{children}</main>
+      {sidebarOpen && (
+        <>
+          <div className="sidebar-overlay d-lg-none" onClick={closeSidebar} />
+
+          <div className="sidebar-mobile d-lg-none">
+            <div className="d-flex justify-content-end p-2">
+              <button
+                className="btn btn-link"
+                onClick={closeSidebar}
+                aria-label="Fechar menu"
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            <Sidebar onNavigate={closeSidebar} />
+          </div>
+        </>
+      )}
+
+      <main>
+        <Button
+          className="btn-outline-secondary d-lg-none mb-3"
+          onClick={openSidebar}
+          aria-label="Abrir menu"
+        >
+          <Menu size={20} />
+        </Button>
+
+        <Topbar />
+
+        <div className="app-content">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 }

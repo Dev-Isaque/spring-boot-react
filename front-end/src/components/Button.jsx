@@ -6,6 +6,7 @@ export function Button({
   className = "",
   disabled = false,
   children,
+  ...props
 }) {
   return (
     <button
@@ -14,6 +15,7 @@ export function Button({
       disabled={disabled}
       className={`btn d-flex align-items-center justify-content-center ${className}`}
       style={style}
+      {...props}
     >
       {children || label}
     </button>
