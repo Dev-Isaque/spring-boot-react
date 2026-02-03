@@ -1,6 +1,7 @@
 package br.com.api.flowDesk.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserModel> findById(@PathVariable Long id) {
+    public ResponseEntity<UserModel> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
@@ -51,7 +52,7 @@ public class UserController {
 
     @PutMapping("atualizar/{id}")
     public ResponseEntity<UserModel> update(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody UserDTO dto) {
 
         UserModel user = service.update(id, dto);

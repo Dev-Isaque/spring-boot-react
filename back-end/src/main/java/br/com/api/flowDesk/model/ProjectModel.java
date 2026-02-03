@@ -1,50 +1,47 @@
 package br.com.api.flowDesk.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "projects")
 @Getter
 @Setter
-public class UserModel {
+public class ProjectModel {
 
     @Id
     @GeneratedValue
     @UuidGenerator
     private UUID id;
 
+    @ManyToOne
+    @JoinColumn(name = "workspace_id", nullable = false)
+    private WorkspaceModel workspace;
+
     private String name;
 
-    @Column(unique = true, nullable = false)
-    private String email;
-
-    @Column(name = "password_hash", nullable = false)
-    private String password;
-    private String code;
+    @Column(columnDefinition = "text")
+    private String description;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private LocalDate updatedAt;
-
-    @OneToMany(mappedBy = "user")
-    private List<WorkspaceMemberModel> workspaceMemberships;
-
+    @OneToMany(mappedBy = "project")
+    private List<TaskModel> tasks;
 }

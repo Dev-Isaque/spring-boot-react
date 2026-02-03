@@ -1,11 +1,10 @@
 package br.com.api.flowDesk.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
@@ -18,10 +17,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "workspaces")
 @Getter
 @Setter
-public class UserModel {
+public class WorkspaceModel {
 
     @Id
     @GeneratedValue
@@ -29,22 +28,18 @@ public class UserModel {
     private UUID id;
 
     private String name;
-
-    @Column(unique = true, nullable = false)
-    private String email;
-
-    @Column(name = "password_hash", nullable = false)
-    private String password;
-    private String code;
+    private String color;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private LocalDate updatedAt;
+    @OneToMany(mappedBy = "workspace")
+    private List<ProjectModel> projects;
 
-    @OneToMany(mappedBy = "user")
-    private List<WorkspaceMemberModel> workspaceMemberships;
+    @OneToMany(mappedBy = "workspace")
+    private List<LabelModel> labels;
 
+    @OneToMany(mappedBy = "workspace")
+    private List<WorkspaceMemberModel> members;
 }

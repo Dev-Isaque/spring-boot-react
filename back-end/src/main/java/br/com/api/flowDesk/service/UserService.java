@@ -1,6 +1,7 @@
 package br.com.api.flowDesk.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,13 +24,14 @@ public class UserService {
         return ur.findAll();
     }
 
-    public UserModel findById(Long id) {
+    public UserModel findById(UUID id) {
         return ur.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 
     public UserModel findByEmail(String email) {
-        return ur.findByEmail(email).orElse(null);
+        return ur.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 
     public UserModel create(UserDTO dto) {
@@ -50,14 +52,16 @@ public class UserService {
         return ur.save(user);
     }
 
-    public UserModel update(Long id, UserDTO dto) {
+    public UserModel update(UUID id, UserDTO dto) {
 
         UserModel user = ur.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário Não Encontrado"));
 
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        if (!dto.getPassword().equals(dto.getPassword_confirm())) {
+            throw new RuntimeException("As senhas não conferem");
+        }
 
         return ur.save(user);
     }
