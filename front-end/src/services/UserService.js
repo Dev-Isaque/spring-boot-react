@@ -6,3 +6,14 @@ export const cadastrar = (user) => {
         body: JSON.stringify(user),
     });
 };
+
+export const getMe = () => {
+    const token = localStorage.getItem("token");
+
+    return apiRequest("/users/me", {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};

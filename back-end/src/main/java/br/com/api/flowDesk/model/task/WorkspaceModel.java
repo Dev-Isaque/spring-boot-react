@@ -7,8 +7,11 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
+import br.com.api.flowDesk.enums.WorkspaceType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -29,6 +32,10 @@ public class WorkspaceModel {
 
     private String name;
     private String color;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private WorkspaceType type;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

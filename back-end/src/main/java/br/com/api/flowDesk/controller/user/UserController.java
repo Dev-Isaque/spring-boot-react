@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.api.flowDesk.dto.auth.UserResponseDTO;
 import br.com.api.flowDesk.dto.user.UserDTO;
 import br.com.api.flowDesk.model.user.UserModel;
+import br.com.api.flowDesk.service.auth.AuthTokenService;
 import br.com.api.flowDesk.service.user.UserService;
 import jakarta.validation.Valid;
 
@@ -29,6 +32,9 @@ public class UserController {
     @Autowired
     private UserService service;
 
+    @Autowired
+    private AuthTokenService authTokenService;
+
     @GetMapping
     public ResponseEntity<List<UserModel>> findAll() {
         return ResponseEntity.ok(service.findAll());
@@ -37,6 +43,21 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserModel> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.findById(id));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> me(
+            @RequestHeader("Authorization") String authHeader) {
+
+        String token = authHeader.replace("Bearer ", "").trim();
+
+        UserModel user = authTokenService.requireUserByToken(token);
+
+        UserResponseDTO dto = new UserResponseDTO(
+                user.getName(),
+                user.getEmail());
+
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/email")
