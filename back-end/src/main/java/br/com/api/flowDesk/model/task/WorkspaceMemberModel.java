@@ -1,28 +1,27 @@
-package br.com.api.flowDesk.model;
+package br.com.api.flowDesk.model.task;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
+import br.com.api.flowDesk.model.user.UserModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "workspace_members")
 @Getter
 @Setter
-public class ProjectModel {
+public class WorkspaceMemberModel {
 
     @Id
     @GeneratedValue
@@ -33,15 +32,13 @@ public class ProjectModel {
     @JoinColumn(name = "workspace_id", nullable = false)
     private WorkspaceModel workspace;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserModel user;
 
-    @Column(columnDefinition = "text")
-    private String description;
+    private String role;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = "project")
-    private List<TaskModel> tasks;
+    @Column(name = "joined_at", updatable = false)
+    private LocalDateTime joinedAt;
 }

@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.service;
+package br.com.api.flowDesk.service.user;
 
 import java.util.List;
 import java.util.UUID;
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import br.com.api.flowDesk.dto.UserDTO;
-import br.com.api.flowDesk.model.UserModel;
+import br.com.api.flowDesk.dto.user.UserDTO;
+import br.com.api.flowDesk.model.user.UserModel;
 import br.com.api.flowDesk.repository.UserRepository;
 
 @Service

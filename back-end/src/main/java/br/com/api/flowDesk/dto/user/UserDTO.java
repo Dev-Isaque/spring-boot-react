@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.dto;
+package br.com.api.flowDesk.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,12 +1,14 @@
-package br.com.api.flowDesk.model;
+package br.com.api.flowDesk.model.user;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
+import br.com.api.flowDesk.model.task.WorkspaceMemberModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,10 +19,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "workspaces")
+@Table(name = "users")
 @Getter
 @Setter
-public class WorkspaceModel {
+public class UserModel {
 
     @Id
     @GeneratedValue
@@ -28,18 +30,22 @@ public class WorkspaceModel {
     private UUID id;
 
     private String name;
-    private String color;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(name = "password_hash", nullable = false)
+    private String password;
+    private String code;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
-    @OneToMany(mappedBy = "workspace")
-    private List<ProjectModel> projects;
+    @UpdateTimestamp
+    private LocalDate updatedAt;
 
-    @OneToMany(mappedBy = "workspace")
-    private List<LabelModel> labels;
+    @OneToMany(mappedBy = "user")
+    private List<WorkspaceMemberModel> workspaceMemberships;
 
-    @OneToMany(mappedBy = "workspace")
-    private List<WorkspaceMemberModel> members;
 }

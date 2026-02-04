@@ -1,7 +1,5 @@
-package br.com.api.flowDesk.model;
+package br.com.api.flowDesk.model.task;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
@@ -10,17 +8,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "labels")
+@Table(name = "task_labels")
 @Getter
 @Setter
-public class LabelModel {
+public class TaskLabelsModel {
 
     @Id
     @GeneratedValue
@@ -28,12 +25,11 @@ public class LabelModel {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "workspace_id", nullable = false)
-    private WorkspaceModel workspace;
+    @JoinColumn(name = "task_id", nullable = false)
+    private TaskModel task;
 
-    private String name;
-    private String color;
+    @ManyToOne
+    @JoinColumn(name = "label_id", nullable = false)
+    private LabelModel label;
 
-    @ManyToMany(mappedBy = "labels")
-    private Set<TaskModel> tasks = new HashSet<>();
 }

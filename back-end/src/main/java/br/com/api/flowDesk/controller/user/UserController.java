@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.controller;
+package br.com.api.flowDesk.controller.user;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.api.flowDesk.dto.UserDTO;
-import br.com.api.flowDesk.model.UserModel;
-import br.com.api.flowDesk.service.UserService;
+import br.com.api.flowDesk.dto.user.UserDTO;
+import br.com.api.flowDesk.model.user.UserModel;
+import br.com.api.flowDesk.service.user.UserService;
 import jakarta.validation.Valid;
 
 @RestController

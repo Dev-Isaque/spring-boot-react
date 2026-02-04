@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.dto;
+package br.com.api.flowDesk.dto.auth;
 
 public class AuthResponseDTO {
 

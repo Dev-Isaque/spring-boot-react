@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.service;
+package br.com.api.flowDesk.service.auth;
 
 import java.util.UUID;
 
@@ -8,10 +8,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.api.flowDesk.dto.AuthResponseDTO;
-import br.com.api.flowDesk.dto.LoginDTO;
-import br.com.api.flowDesk.dto.UserResponseDTO;
-import br.com.api.flowDesk.model.UserModel;
+import br.com.api.flowDesk.dto.auth.AuthResponseDTO;
+import br.com.api.flowDesk.dto.auth.LoginDTO;
+import br.com.api.flowDesk.dto.auth.UserResponseDTO;
+import br.com.api.flowDesk.model.user.UserModel;
+import br.com.api.flowDesk.service.user.UserService;
 
 @Service
 public class AuthService {

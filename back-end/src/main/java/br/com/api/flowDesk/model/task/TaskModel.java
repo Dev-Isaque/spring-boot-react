@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.model;
+package br.com.api.flowDesk.model.task;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
+import br.com.api.flowDesk.model.user.UserModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
