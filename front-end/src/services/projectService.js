@@ -5,3 +5,15 @@ export const getMyProjects = () => {
         method: "GET"
     });
 };
+
+
+export const createProject = ({ workspaceId, name, description = "" }) => {
+    return apiRequest("/projects/create", {
+        method: "POST",
+        body: JSON.stringify({
+            workspaceId,
+            name,
+            description,
+        }),
+    })
+}

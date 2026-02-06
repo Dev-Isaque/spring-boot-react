@@ -1,22 +1,33 @@
 const API_URL = "http://localhost:8080";
 
 export async function apiRequest(url, options = {}) {
-
     const token = localStorage.getItem("token");
 
-    const response = await fetch(`${API_URL}${url}`, {
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            ...options?.headers,
-        },
+    const method = (options.method || "GET").toUpperCase();
+
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options.headers || {}),
+    };
+
+    const fetchOptions = {
         ...options,
-    });
+        method,
+        headers,
+        credentials: "include",
+    };
+
+    if (options.body != null && method !== "GET" && method !== "HEAD") {
+        fetchOptions.body = options.body;
+    } else {
+        delete fetchOptions.body;
+    }
+
+    const response = await fetch(`${API_URL}${url}`, fetchOptions);
 
     let data = null;
-
     try {
         data = await response.json();
     } catch {
@@ -24,14 +35,8 @@ export async function apiRequest(url, options = {}) {
     }
 
     if (!response.ok) {
-        return {
-            sucesso: false,
-            mensagem: data?.mensagem || data?.message || "Erro na requisição",
-        };
+        return { sucesso: false, mensagem: data?.mensagem || data?.message || "Erro na requisição" };
     }
 
-    return {
-        sucesso: true,
-        dados: data,
-    };
+    return { sucesso: true, dados: data };
 }

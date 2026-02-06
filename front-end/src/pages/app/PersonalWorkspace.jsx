@@ -1,75 +1,78 @@
-import { useEffect, useState } from "react";
-import { getMe } from "../../services/userService";
-import { getMyProjects } from "../../services/projectService";
-
+import { useState } from "react";
 import { Plus } from "lucide-react";
+
 import { Button } from "../../components/Button";
-import { Modal } from "../../components/Modal";
+import { ProjectBar } from "../../components/projects/ProjectBar";
+import { CreateProjectInline } from "../../components/projects/CreateProjectInline";
+import { TaskModal } from "../../components/tasks/TaskModal";
+
+import { useProjects } from "../../hooks/UseProject";
+import { usePersonalWorkspace } from "../../hooks/UsePersonalWorkspace";
+import { useMe } from "../../hooks/UseMe";
 
 function PersonalWorkspace() {
-  const [usuario, setUsuario] = useState(null);
-  const [mensagem, setMensagem] = useState("");
-  const [projects, setProjects] = useState([]);
-  const [projectSelecionado, setProjectSelecionado] = useState("ALL"); // ALL ou UUID
+  const { usuario, errorMe } = useMe();
 
-  useEffect(() => {
-    async function load() {
-      setMensagem("");
+  const { workspace, loadingWorkspace, errorWorkspace } =
+    usePersonalWorkspace();
+  const workspaceId = workspace?.id;
 
-      const rUser = await getMe();
-      if (!rUser.sucesso) {
-        setMensagem(rUser.mensagem || "Não foi possível carregar o usuário");
-        return;
-      }
-      setUsuario(rUser.dados);
+  const {
+    projects,
+    projectSelecionado,
+    setProjectSelecionado,
+    loadingProjects,
+    savingProject,
+    errorProjects,
+    addProject,
+  } = useProjects({ workspaceId });
 
-      const rProjects = await getMyProjects();
-      if (!rProjects.sucesso) {
-        setMensagem(
-          rProjects.mensagem || "Não foi possível carregar os projetos",
-        );
-        setProjects([]); // garante array
-        return;
-      }
+  const [isCreatingProject, setIsCreatingProject] = useState(false);
 
-      setProjects(Array.isArray(rProjects.dados) ? rProjects.dados : []);
-    }
+  function openCreateProject() {
+    setIsCreatingProject(true);
+  }
 
-    load();
-  }, []);
+  function cancelCreateProject() {
+    if (savingProject) return;
+    setIsCreatingProject(false);
+  }
+
+  async function confirmCreateProject(name) {
+    if (savingProject) return;
+
+    const result = await addProject({ name });
+    if (!result?.ok) return;
+
+    setIsCreatingProject(false);
+  }
+
+  const erroTela = errorMe || errorWorkspace || errorProjects;
 
   return (
     <div className="tasks-page">
       <h1>Suas Tarefas{usuario ? `, ${usuario.name}` : ""}</h1>
 
-      {mensagem && <p className="auth-error">{mensagem}</p>}
+      {erroTela && <p className="auth-error">{erroTela}</p>}
 
-      <div className="d-flex gap-2 flex-wrap">
-        <Button
-          type="button"
-          className={
-            projectSelecionado === "ALL" ? "btn-color" : "btn-outline-primary"
-          }
-          onClick={() => setProjectSelecionado("ALL")}
-        >
-          Todas
-        </Button>
-
-        {projects.map((p) => (
-          <Button
-            key={p.id}
-            type="button"
-            className={
-              projectSelecionado === p.id
-                ? "btn-color"
-                : "btn-outline-primary"
-            }
-            onClick={() => setProjectSelecionado(p.id)}
-          >
-            {p.name}
-          </Button>
-        ))}
-      </div>
+      <ProjectBar
+        projects={projects}
+        projectSelecionado={projectSelecionado}
+        setProjectSelecionado={setProjectSelecionado}
+        isCreatingProject={isCreatingProject}
+        onOpenCreate={openCreateProject}
+        loadingWorkspace={loadingWorkspace}
+        workspaceId={workspaceId}
+        loadingProjects={loadingProjects}
+        savingProject={savingProject}
+        createSlot={
+          <CreateProjectInline
+            savingProject={savingProject}
+            onConfirm={confirmCreateProject}
+            onCancel={cancelCreateProject}
+          />
+        }
+      />
 
       <Button
         type="button"
@@ -80,32 +83,7 @@ function PersonalWorkspace() {
         <Plus /> Nova Tarefa Pessoal
       </Button>
 
-      <Modal
-        id="modalTask"
-        title="Nova Tarefa"
-        footer={
-          <>
-            <Button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancelar
-            </Button>
-
-            <Button type="button" className="btn btn-primary">
-              Salvar
-            </Button>
-          </>
-        }
-      >
-        <input
-          type="text"
-          className="form-control mb-3"
-          placeholder="Título da tarefa"
-        />
-        <textarea className="form-control" placeholder="Descrição" />
-      </Modal>
+      <TaskModal />
     </div>
   );
 }

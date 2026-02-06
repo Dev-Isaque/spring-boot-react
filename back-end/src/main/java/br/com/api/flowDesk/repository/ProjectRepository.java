@@ -5,19 +5,18 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import br.com.api.flowDesk.model.task.ProjectModel;
 
 public interface ProjectRepository extends JpaRepository<ProjectModel, UUID> {
 
     @Query("""
-                SELECT p
-                FROM ProjectModel p
-                JOIN p.workspace w
-                JOIN w.members m
-                WHERE m.user.id = :userId
+              select distinct p
+              from ProjectModel p
+              join p.workspace w
+              join w.members m
+              where m.user.id = :userId
+              order by p.createdAt desc
             """)
-    List<ProjectModel> findProjectsByUser(@Param("userId") UUID userId);
-
+    List<ProjectModel> findProjectsByUser(UUID userId);
 }

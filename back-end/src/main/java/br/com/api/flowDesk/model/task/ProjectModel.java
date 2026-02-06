@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +33,7 @@ public class ProjectModel {
 
     @ManyToOne
     @JoinColumn(name = "workspace_id", nullable = false)
+    @JsonIgnore
     private WorkspaceModel workspace;
 
     private String name;
