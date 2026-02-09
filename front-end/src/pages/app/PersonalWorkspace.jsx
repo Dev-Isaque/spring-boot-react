@@ -9,6 +9,7 @@ import { TaskModal } from "../../components/tasks/TaskModal";
 import { useProjects } from "../../hooks/UseProject";
 import { usePersonalWorkspace } from "../../hooks/UsePersonalWorkspace";
 import { useMe } from "../../hooks/UseMe";
+import { TaskBody } from "../../components/tasks/TaskBody";
 
 function PersonalWorkspace() {
   const { usuario, errorMe } = useMe();
@@ -74,16 +75,24 @@ function PersonalWorkspace() {
         }
       />
 
+      <TaskBody workspaceId={workspaceId} projectId={projectSelecionado} />
+
       <Button
         type="button"
         className="floating-btn btn-color"
         data-bs-toggle="modal"
         data-bs-target="#modalTask"
+        disabled={projectSelecionado === "ALL" || !projectSelecionado}
+        title={
+          projectSelecionado === "ALL"
+            ? "Selecione um projeto para criar tarefa"
+            : "Nova tarefa"
+        }
       >
-        <Plus /> Nova Tarefa Pessoal
+        <Plus /> Nova Tarefa
       </Button>
 
-      <TaskModal />
+      <TaskModal projectId={projectSelecionado} />
     </div>
   );
 }

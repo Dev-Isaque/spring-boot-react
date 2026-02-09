@@ -35,6 +35,7 @@ export function ProjectBar({
           }
           onClick={() => setProjectSelecionado(p.id)}
           disabled={savingProject}
+          id={p.id}
         >
           {p.name}
         </Button>

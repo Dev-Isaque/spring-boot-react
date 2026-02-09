@@ -1,11 +1,16 @@
 package br.com.api.flowDesk.service.task;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.api.flowDesk.dto.task.CreateTaskRequest;
+import br.com.api.flowDesk.dto.task.TaskDTO;
 import br.com.api.flowDesk.model.task.TaskModel;
 import br.com.api.flowDesk.repository.LabelRepository;
 import br.com.api.flowDesk.repository.ProjectRepository;
@@ -24,6 +29,31 @@ public class TaskService {
     private UserRepository userRepository;
     @Autowired
     private LabelRepository labelRepository;
+
+    public List<TaskDTO> listByProject(UUID projectId) {
+        return taskRepository.findByProjectId(projectId)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<TaskDTO> listByWorkspace(UUID workspaceId) {
+        return taskRepository.findByProject_Workspace_Id(workspaceId)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    private TaskDTO toDTO(TaskModel task) {
+        return new TaskDTO(
+                task.getId(),
+                task.getTitle(),
+                task.getStatus(),
+                task.getPriority(),
+                task.getDueDate(),
+                task.getProject().getId(),
+                task.getCreatedAt());
+    }
 
     @Transactional
     public TaskModel create(CreateTaskRequest dto, String loggedEmail) {

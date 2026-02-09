@@ -53,4 +53,5 @@ public class WorkspaceController {
                 ws.getColor(),
                 ws.getType()));
     }
+
 }

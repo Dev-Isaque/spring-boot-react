@@ -16,7 +16,6 @@ export function CreateProjectInline({ savingProject, onConfirm, onCancel }) {
     const clean = name.trim();
     if (!clean) return;
     await onConfirm(clean);
-    // quem decide fechar/limpar é o pai; aqui só mantém simples
     setName("");
   }
 
