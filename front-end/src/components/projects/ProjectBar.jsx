@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { Button } from "../Button";
 
 export function ProjectBar({
-  projects,
+  projects = [],
   projectSelecionado,
   setProjectSelecionado,
   isCreatingProject,
@@ -26,20 +26,24 @@ export function ProjectBar({
         Todas
       </Button>
 
-      {projects.map((p) => (
-        <Button
-          key={p.id}
-          type="button"
-          className={
-            projectSelecionado === p.id ? "btn-color" : "btn-outline-primary"
-          }
-          onClick={() => setProjectSelecionado(p.id)}
-          disabled={savingProject}
-          id={p.id}
-        >
-          {p.name}
-        </Button>
-      ))}
+      {loadingProjects && (
+        <span style={{ opacity: 0.7 }}>Carregando projetos...</span>
+      )}
+
+      {!loadingProjects &&
+        projects.map((p) => (
+          <Button
+            key={p.id}
+            type="button"
+            className={
+              projectSelecionado === p.id ? "btn-color" : "btn-outline-primary"
+            }
+            onClick={() => setProjectSelecionado(p.id)}
+            disabled={savingProject || isCreatingProject}
+          >
+            {p.name}
+          </Button>
+        ))}
 
       {!isCreatingProject ? (
         <Button

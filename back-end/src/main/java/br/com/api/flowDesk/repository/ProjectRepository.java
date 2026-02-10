@@ -19,4 +19,16 @@ public interface ProjectRepository extends JpaRepository<ProjectModel, UUID> {
               order by p.createdAt desc
             """)
     List<ProjectModel> findProjectsByUser(UUID userId);
+
+    @Query("""
+              select distinct p
+              from ProjectModel p
+              join p.workspace w
+              join w.members m
+              where w.id = :workspaceId
+                and m.user.id = :userId
+              order by p.createdAt desc
+            """)
+    List<ProjectModel> findProjectsByWorkspaceAndUser(UUID workspaceId, UUID userId);
+
 }

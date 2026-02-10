@@ -1,8 +1,8 @@
 import { apiRequest } from "./apiService";
 
-export const getMyProjects = () => {
-    return apiRequest("/projects", {
-        method: "GET"
+export const getMyProjects = (workspaceId) => {
+    return apiRequest(`/projects/workspace/${workspaceId}`, {
+        method: "GET",
     });
 };
 

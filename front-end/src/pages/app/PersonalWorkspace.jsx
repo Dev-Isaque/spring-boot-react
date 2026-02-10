@@ -75,7 +75,11 @@ function PersonalWorkspace() {
         }
       />
 
-      <TaskBody workspaceId={workspaceId} projectId={projectSelecionado} />
+      <TaskBody
+        workspaceId={workspaceId}
+        projectId={projectSelecionado}
+        loadingWorkspace={loadingWorkspace}
+      />
 
       <Button
         type="button"

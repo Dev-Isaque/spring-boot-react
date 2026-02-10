@@ -8,12 +8,19 @@ export function useProjects({ workspaceId }) {
     const [savingProject, setSavingProject] = useState(false);
     const [errorProjects, setErrorProjects] = useState("");
 
-    async function loadProjects() {
-        setLoadingProjects(true);
-        setErrorProjects("");
+    async function loadProjects(wsId, isAliveRef) {
+        if (!wsId) return;
+
+        if (isAliveRef?.current) {
+            setLoadingProjects(true);
+            setErrorProjects("");
+        }
 
         try {
-            const r = await getMyProjects();
+
+            const r = await getMyProjects(wsId);
+
+            if (!isAliveRef?.current) return;
 
             if (!r?.sucesso) {
                 setProjects([]);
@@ -23,7 +30,7 @@ export function useProjects({ workspaceId }) {
 
             setProjects(Array.isArray(r.dados) ? r.dados : []);
         } finally {
-            setLoadingProjects(false);
+            if (isAliveRef?.current) setLoadingProjects(false);
         }
     }
 
@@ -57,7 +64,10 @@ export function useProjects({ workspaceId }) {
                 return { ok: true, project: r.dados };
             }
 
-            await loadProjects();
+            const wsId = workspaceId;
+            const fakeAlive = { current: true };
+            await loadProjects(wsId, fakeAlive);
+
             return { ok: true };
         } finally {
             setSavingProject(false);
@@ -66,7 +76,14 @@ export function useProjects({ workspaceId }) {
 
     useEffect(() => {
         if (!workspaceId) return;
-        loadProjects();
+
+        const aliveRef = { current: true };
+
+        loadProjects(workspaceId, aliveRef);
+
+        return () => {
+            aliveRef.current = false;
+        };
     }, [workspaceId]);
 
     return {

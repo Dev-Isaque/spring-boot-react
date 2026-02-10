@@ -1,12 +1,14 @@
 package br.com.api.flowDesk.controller.task;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.api.flowDesk.dto.task.CreateProjectRequest;
+import br.com.api.flowDesk.dto.task.ProjectResponse;
 import br.com.api.flowDesk.model.task.ProjectModel;
 import br.com.api.flowDesk.model.user.UserModel;
 import br.com.api.flowDesk.repository.ProjectRepository;
@@ -39,6 +42,7 @@ public class ProjectController {
     public ResponseEntity<ProjectModel> create(
             @RequestBody @Valid CreateProjectRequest dto,
             @RequestHeader("Authorization") String authHeader) {
+
         String token = authHeader.replace("Bearer ", "").trim();
         UserModel user = authTokenService.requireUserByToken(token);
 
@@ -48,11 +52,30 @@ public class ProjectController {
 
     @GetMapping
     public List<ProjectModel> myProjects(@RequestHeader("Authorization") String authHeader) {
-
         String token = authHeader.replace("Bearer ", "").trim();
-
         UserModel user = authTokenService.requireUserByToken(token);
 
         return projectRepository.findProjectsByUser(user.getId());
     }
+
+    @GetMapping("/workspace/{workspaceId}")
+    public ResponseEntity<List<ProjectResponse>> myProjectsByWorkspace(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable UUID workspaceId) {
+
+        String token = authHeader.replace("Bearer ", "").trim();
+        UserModel user = authTokenService.requireUserByToken(token);
+
+        var projects = projectRepository
+                .findProjectsByWorkspaceAndUser(workspaceId, user.getId())
+                .stream()
+                .map(p -> new ProjectResponse(
+                        p.getId(),
+                        p.getName(),
+                        p.getDescription()))
+                .toList();
+
+        return ResponseEntity.ok(projects);
+    }
+
 }
