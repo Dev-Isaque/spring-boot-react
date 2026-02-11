@@ -65,13 +65,13 @@ public class UserController {
         return ResponseEntity.ok(service.findByEmail(email));
     }
 
-    @PostMapping("/cadastrar")
+    @PostMapping("/register")
     public ResponseEntity<UserModel> create(@Valid @RequestBody UserDTO dto) {
         UserModel user = service.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    @PutMapping("atualizar/{id}")
+    @PutMapping("update/{id}")
     public ResponseEntity<UserModel> update(
             @PathVariable UUID id,
             @Valid @RequestBody UserDTO dto) {

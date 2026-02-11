@@ -2,6 +2,7 @@ package br.com.api.flowDesk.dto.task;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -18,5 +19,6 @@ public class TaskDTO {
     private LocalDate dueDate;
     private UUID projectId;
     private LocalDateTime createdAt;
+    private List<LabelDTO> labels;
 
 }

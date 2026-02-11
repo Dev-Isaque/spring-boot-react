@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../Button";
 import { Modal } from "../Modal";
 
-export function TaskModal({ projectId }) {
+export function TaskModal({ projectId, labels = [], onCreated }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  const [priority, setPriority] = useState("MEDIUM");
+  const [dueDate, setDueDate] = useState("");
+  const [selectedLabelIds, setSelectedLabelIds] = useState([]);
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
-  const canSave = projectId && projectId !== "ALL" && title.trim().length > 0;
+  const canSave = useMemo(() => {
+    return projectId && projectId !== "ALL" && title.trim().length > 0;
+  }, [projectId, title]);
+
+  function toggleLabel(id) {
+    setSelectedLabelIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  }
 
   async function handleSave() {
     if (!canSave || saving) return;
@@ -17,9 +30,16 @@ export function TaskModal({ projectId }) {
       setSaving(true);
       setError(null);
 
-      // Se você usa Authorization Bearer, aqui precisa enviar o header.
-      // Se você usa cookie (credentials include), pode manter assim.
       const token = localStorage.getItem("token");
+
+      const payload = {
+        projectId,
+        title: title.trim(),
+        description: description.trim(),
+        priority,
+        dueDate: dueDate ? dueDate : null,
+        labelIds: selectedLabelIds,
+      };
 
       const res = await fetch("http://localhost:8080/tasks/cadastrar", {
         method: "POST",
@@ -27,13 +47,9 @@ export function TaskModal({ projectId }) {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({
-          projectId,
-          title: title.trim(),
-          description: description.trim(),
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
@@ -41,22 +57,22 @@ export function TaskModal({ projectId }) {
         throw new Error(msg || "Erro ao criar tarefa");
       }
 
-      // limpa campos
+      const created = await res.json().catch(() => null);
+
       setTitle("");
       setDescription("");
+      setPriority("MEDIUM");
+      setDueDate("");
+      setSelectedLabelIds([]);
 
-      // fecha modal (Bootstrap 5)
       const el = document.getElementById("modalTask");
       if (el && window.bootstrap) {
-        const instance = window.bootstrap.Modal.getOrCreateInstance(el);
-        instance.hide();
+        window.bootstrap.Modal.getOrCreateInstance(el).hide();
       } else {
-        // fallback: simula o dismiss
         document.querySelector(`#modalTask [data-bs-dismiss="modal"]`)?.click();
       }
 
-      // ✅ aqui é onde você depois vai chamar um "reload" do TaskBody
-      // (já te mostro abaixo como fazer)
+      if (created) onCreated?.(created);
     } catch (e) {
       setError(e.message || "Erro inesperado");
     } finally {
@@ -93,7 +109,6 @@ export function TaskModal({ projectId }) {
       {projectId === "ALL" && (
         <p className="auth-error">Selecione um projeto para criar a tarefa.</p>
       )}
-
       {error && <p className="auth-error">{error}</p>}
 
       <input
@@ -106,12 +121,68 @@ export function TaskModal({ projectId }) {
       />
 
       <textarea
-        className="form-control"
+        className="form-control mb-3"
         placeholder="Descrição"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         disabled={saving}
       />
+
+      <div className="row g-2 mb-3">
+        <div className="col-md-6">
+          <label className="form-label">Prioridade</label>
+          <select
+            className="form-select"
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            disabled={saving}
+          >
+            <option value="LOW">Baixa</option>
+            <option value="MEDIUM">Média</option>
+            <option value="HIGH">Alta</option>
+          </select>
+        </div>
+
+        <div className="col-md-6">
+          <label className="form-label">Vencimento</label>
+          <input
+            type="date"
+            className="form-control"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            disabled={saving}
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="form-label">Labels</label>
+
+        {labels.length === 0 ? (
+          <div className="small text-muted">
+            Nenhuma label disponível para este workspace/projeto.
+          </div>
+        ) : (
+          <div className="d-flex flex-wrap gap-2">
+            {labels.map((l) => (
+              <button
+                key={l.id}
+                type="button"
+                className={`btn btn-sm ${
+                  selectedLabelIds.includes(l.id)
+                    ? "btn-primary"
+                    : "btn-outline-primary"
+                }`}
+                onClick={() => toggleLabel(l.id)}
+                disabled={saving}
+                title={l.name}
+              >
+                {l.name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </Modal>
   );
 }

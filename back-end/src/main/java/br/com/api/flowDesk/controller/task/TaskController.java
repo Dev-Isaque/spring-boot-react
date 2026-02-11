@@ -3,10 +3,15 @@ package br.com.api.flowDesk.controller.task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import br.com.api.flowDesk.dto.task.CreateTaskRequest;
-import br.com.api.flowDesk.model.task.TaskModel;
+import br.com.api.flowDesk.dto.task.TaskDTO;
 import br.com.api.flowDesk.service.auth.AuthTokenService;
 import br.com.api.flowDesk.service.task.TaskService;
 import jakarta.validation.Valid;
@@ -23,7 +28,7 @@ public class TaskController {
     private AuthTokenService authTokenService;
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<TaskModel> create(
+    public ResponseEntity<TaskDTO> create(
             @RequestBody @Valid CreateTaskRequest dto,
             @RequestHeader("Authorization") String authorization) {
 

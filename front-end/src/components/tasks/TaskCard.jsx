@@ -1,13 +1,9 @@
-import { PriorityBadge } from "./PriorityBadge";
-
 export function TaskCard({ task, onToggle }) {
   const done = Boolean(task?.done);
 
   return (
     <div
-      className={`task-card d-flex align-items-start gap-3 ${
-        done ? "task-done" : ""
-      }`}
+      className={`task-card d-flex align-items-start gap-3 ${done ? "task-done" : ""}`}
     >
       <input
         type="checkbox"
@@ -18,11 +14,12 @@ export function TaskCard({ task, onToggle }) {
 
       <div className="flex-grow-1">
         <div className="fw-semibold">{task?.title}</div>
-
-        {task?.time && <div className="small text-muted">{task.time}</div>}
+        {task?.dueDate && (
+          <div className="small " style={{ color: "var(--text-muted)" }}>
+            {task.dueDate && task.dueDate.split("-").reverse().join("/")}
+          </div>
+        )}
       </div>
-
-      {task?.priority && <PriorityBadge value={task.priority} />}
     </div>
   );
 }
