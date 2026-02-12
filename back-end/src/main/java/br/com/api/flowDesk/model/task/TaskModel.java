@@ -1,6 +1,6 @@
 package br.com.api.flowDesk.model.task;
 
-import java.time.LocalDate;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,6 +38,7 @@ public class TaskModel {
     @JoinColumn(name = "project_id", nullable = false)
     private ProjectModel project;
 
+    @Column(nullable = false)
     private String title;
 
     @Column(columnDefinition = "text")
@@ -46,14 +47,18 @@ public class TaskModel {
     private String status;
     private String priority;
 
-    private LocalDate dueDate;
+    @Column(name = "due_date_time")
+    private LocalDateTime dueDateTime;
+
+    @Column(name = "estimated_time_seconds")
+    private Long estimatedTimeSeconds;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
     private UserModel createdBy;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_to") // nullable por padrão
+    @JoinColumn(name = "assigned_to")
     private UserModel assignedTo;
 
     @CreationTimestamp
@@ -68,4 +73,11 @@ public class TaskModel {
     @JoinTable(name = "task_labels", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<LabelModel> labels = new HashSet<>();
 
+    public Duration getEstimatedTime() {
+        return estimatedTimeSeconds != null ? Duration.ofSeconds(estimatedTimeSeconds) : null;
+    }
+
+    public void setEstimatedTime(Duration duration) {
+        this.estimatedTimeSeconds = (duration != null) ? duration.getSeconds() : null;
+    }
 }

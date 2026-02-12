@@ -45,6 +45,25 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
+    private String formatEstimatedTime(Long seconds) {
+        if (seconds == null)
+            return null;
+        long mm = seconds / 60;
+        long ss = seconds % 60;
+        return String.format("%d:%02d", mm, ss);
+    }
+
+    private Long parseEstimatedTime(String value) {
+        if (value == null || value.isBlank())
+            return null;
+
+        var parts = value.split(":");
+        long mm = Long.parseLong(parts[0]);
+        long ss = Long.parseLong(parts[1]);
+
+        return (mm * 60) + ss;
+    }
+
     private TaskDTO toDTO(TaskModel task) {
 
         var labelDTOs = task.getLabels()
@@ -60,7 +79,8 @@ public class TaskService {
                 task.getTitle(),
                 task.getStatus(),
                 task.getPriority(),
-                task.getDueDate(),
+                task.getDueDateTime(),
+                formatEstimatedTime(task.getEstimatedTimeSeconds()),
                 task.getProject().getId(),
                 task.getCreatedAt(),
                 labelDTOs);
@@ -86,7 +106,11 @@ public class TaskService {
 
         task.setPriority(dto.getPriority() != null ? dto.getPriority() : "MEDIUM");
         task.setStatus("TODO");
-        task.setDueDate(dto.getDueDate());
+
+        task.setDueDateTime(dto.getDueDateTime());
+
+        task.setEstimatedTimeSeconds(parseEstimatedTime(dto.getEstimatedTime()));
+
         task.setCreatedBy(user);
 
         if (dto.getLabelIds() != null && !dto.getLabelIds().isEmpty()) {

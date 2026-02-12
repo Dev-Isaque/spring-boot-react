@@ -1,8 +1,7 @@
 /* ========== TOPBAR ========== */
 
 .topbar {
-  background: var(--card-color);
-  border: 1px solid var(--border-color);
+  margin: 20px 5px;
 }
 
 .search-box {
@@ -45,6 +44,10 @@
   display: grid;
   grid-template-columns: 280px 1fr;
   background: var(--bg-color);
+}
+
+.app-content {
+  padding: 24px;
 }
 
 

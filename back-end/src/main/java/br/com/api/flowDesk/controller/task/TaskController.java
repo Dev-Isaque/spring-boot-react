@@ -27,7 +27,7 @@ public class TaskController {
     @Autowired
     private AuthTokenService authTokenService;
 
-    @PostMapping("/cadastrar")
+    @PostMapping("/register")
     public ResponseEntity<TaskDTO> create(
             @RequestBody @Valid CreateTaskRequest dto,
             @RequestHeader("Authorization") String authorization) {

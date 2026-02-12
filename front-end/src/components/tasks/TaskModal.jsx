@@ -1,13 +1,18 @@
 import { useMemo, useState } from "react";
 import { Button } from "../Button";
 import { Modal } from "../Modal";
+import { useTasks } from "../../hooks/UseTasks";
 
-export function TaskModal({ projectId, labels = [], onCreated }) {
+export function TaskModal({ projectId, labels = [] }) {
+  const { addTask } = useTasks(projectId);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
   const [priority, setPriority] = useState("MEDIUM");
-  const [dueDate, setDueDate] = useState("");
+
+  const [dueDateTime, setDueDateTime] = useState("");
+  const [estimatedTime, setEstimatedTime] = useState("");
+
   const [selectedLabelIds, setSelectedLabelIds] = useState([]);
 
   const [saving, setSaving] = useState(false);
@@ -30,49 +35,29 @@ export function TaskModal({ projectId, labels = [], onCreated }) {
       setSaving(true);
       setError(null);
 
-      const token = localStorage.getItem("token");
-
       const payload = {
         projectId,
         title: title.trim(),
         description: description.trim(),
         priority,
-        dueDate: dueDate ? dueDate : null,
+        dueDateTime: dueDateTime || null,
+        estimatedTime: estimatedTime || null,
         labelIds: selectedLabelIds,
       };
 
-      const res = await fetch("http://localhost:8080/tasks/cadastrar", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const msg = await res.text().catch(() => "");
-        throw new Error(msg || "Erro ao criar tarefa");
-      }
-
-      const created = await res.json().catch(() => null);
+      await addTask(payload);
 
       setTitle("");
       setDescription("");
       setPriority("MEDIUM");
-      setDueDate("");
+      setDueDateTime("");
+      setEstimatedTime("");
       setSelectedLabelIds([]);
 
       const el = document.getElementById("modalTask");
       if (el && window.bootstrap) {
         window.bootstrap.Modal.getOrCreateInstance(el).hide();
-      } else {
-        document.querySelector(`#modalTask [data-bs-dismiss="modal"]`)?.click();
       }
-
-      if (created) onCreated?.(created);
     } catch (e) {
       setError(e.message || "Erro inesperado");
     } finally {
@@ -129,7 +114,7 @@ export function TaskModal({ projectId, labels = [], onCreated }) {
       />
 
       <div className="row g-2 mb-3">
-        <div className="col-md-6">
+        <div className="col-md-4">
           <label className="form-label">Prioridade</label>
           <select
             className="form-select"
@@ -143,13 +128,25 @@ export function TaskModal({ projectId, labels = [], onCreated }) {
           </select>
         </div>
 
-        <div className="col-md-6">
+        <div className="col-md-4">
           <label className="form-label">Vencimento</label>
           <input
-            type="date"
+            type="datetime-local"
             className="form-control"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
+            value={dueDateTime}
+            onChange={(e) => setDueDateTime(e.target.value)}
+            disabled={saving}
+          />
+        </div>
+
+        <div className="col-md-4">
+          <label className="form-label">Tempo (mm:ss)</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="30:00"
+            value={estimatedTime}
+            onChange={(e) => setEstimatedTime(e.target.value)}
             disabled={saving}
           />
         </div>
@@ -159,9 +156,7 @@ export function TaskModal({ projectId, labels = [], onCreated }) {
         <label className="form-label">Labels</label>
 
         {labels.length === 0 ? (
-          <div className="small text-muted">
-            Nenhuma label disponível para este workspace/projeto.
-          </div>
+          <div className="small text-muted">Nenhuma label disponível.</div>
         ) : (
           <div className="d-flex flex-wrap gap-2">
             {labels.map((l) => (
@@ -175,7 +170,6 @@ export function TaskModal({ projectId, labels = [], onCreated }) {
                 }`}
                 onClick={() => toggleLabel(l.id)}
                 disabled={saving}
-                title={l.name}
               >
                 {l.name}
               </button>

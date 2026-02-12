@@ -1,6 +1,5 @@
 package br.com.api.flowDesk.dto.task;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -16,9 +15,11 @@ public class TaskDTO {
     private String title;
     private String status;
     private String priority;
-    private LocalDate dueDate;
+
+    private LocalDateTime dueDateTime;
+    private String estimatedTime;
+
     private UUID projectId;
     private LocalDateTime createdAt;
     private List<LabelDTO> labels;
-
 }
