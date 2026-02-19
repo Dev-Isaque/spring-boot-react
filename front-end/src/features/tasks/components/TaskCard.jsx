@@ -11,12 +11,19 @@ import {
 } from "lucide-react";
 import { Button } from "../../../shared/components/Button";
 import { useTaskTimer } from "../hooks/useTaskTimer";
+import { TaskProgress } from "./TaskProgress";
 
 export function TaskCard({ task, onToggle }) {
   const done = task?.status === "DONE";
 
   const timer = useTaskTimer(task?.estimatedTime);
-  
+
+  async function handleToggle() {
+    if (!onToggle) return;
+
+    await onToggle(task);
+  }
+
   function handlePlayPause() {
     if (timer.isRunning) return timer.pause();
     if (timer.isPaused) return timer.resume();
@@ -29,20 +36,24 @@ export function TaskCard({ task, onToggle }) {
         <div className="task-left">
           <Button
             className="task-check p-0 border-0 bg-transparent"
-            onClick={() => onToggle?.(task)}
+            onClick={handleToggle}
           >
             {done ? <CheckCircle2 size={20} /> : <Circle size={20} />}
           </Button>
 
           <div className="task-info">
-            {task?.estimatedTime && (
-              <div
-                className={`task-time ${timer.isRunning ? "is-running" : ""}`}
-              >
-                <Clock size={14} />
-                {timer.timeText}
-              </div>
-            )}
+            <div className="task-meta-row">
+              {task?.estimatedTime && (
+                <div
+                  className={`task-time ${timer.isRunning ? "is-running" : ""}`}
+                >
+                  <Clock size={14} />
+                  {timer.timeText}
+                </div>
+              )}
+
+              <TaskProgress taskId={task.id} />
+            </div>
 
             <div
               className="task-title"
@@ -58,7 +69,7 @@ export function TaskCard({ task, onToggle }) {
 
         <div className="task-actions">
           <Button
-            className="task-play"
+            className={timer.isRunning ? "task-play" : "task-menu"}
             onClick={handlePlayPause}
             title="Iniciar/Pausar"
           >

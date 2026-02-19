@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.api.flowDesk.dto.user.UserDTO;
 import br.com.api.flowDesk.enums.WorkspaceType;
@@ -15,7 +16,6 @@ import br.com.api.flowDesk.model.user.UserModel;
 import br.com.api.flowDesk.repository.UserRepository;
 import br.com.api.flowDesk.repository.WorkspaceMemberRepository;
 import br.com.api.flowDesk.repository.WorkspaceRepository;
-import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {

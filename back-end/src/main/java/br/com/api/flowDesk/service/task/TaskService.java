@@ -7,17 +7,19 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.api.flowDesk.dto.task.CreateTaskRequest;
 import br.com.api.flowDesk.dto.task.LabelDTO;
 import br.com.api.flowDesk.dto.task.TaskDTO;
+import br.com.api.flowDesk.dto.taskitem.TaskProgressDTO;
 import br.com.api.flowDesk.model.task.TaskModel;
 import br.com.api.flowDesk.repository.LabelRepository;
 import br.com.api.flowDesk.repository.ProjectRepository;
+import br.com.api.flowDesk.repository.TaskItemRepository;
 import br.com.api.flowDesk.repository.TaskRepository;
 import br.com.api.flowDesk.repository.UserRepository;
-import jakarta.transaction.Transactional;
 
 @Service
 public class TaskService {
@@ -30,6 +32,8 @@ public class TaskService {
     private UserRepository userRepository;
     @Autowired
     private LabelRepository labelRepository;
+    @Autowired
+    private TaskItemRepository taskItemRepository;
 
     public List<TaskDTO> listByProject(UUID projectId) {
         return taskRepository.findByProjectId(projectId)
@@ -134,5 +138,35 @@ public class TaskService {
         }
 
         return toDTO(taskRepository.save(task));
+    }
+
+    @Transactional(readOnly = true)
+    public TaskProgressDTO getTaskProgress(UUID taskId) {
+        var task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada"));
+
+        long total = taskItemRepository.countByTask_Id(taskId);
+        long completed = taskItemRepository.countByTask_IdAndDoneTrue(taskId);
+
+        double percentage = 0.0;
+
+        if (total > 0) {
+            percentage = ((double) completed / total) * 100.0;
+        }
+
+        return new TaskProgressDTO(
+                task.getId(),
+                total,
+                completed,
+                percentage);
+    }
+
+    @Transactional(readOnly = true)
+    public TaskDTO getTaskById(UUID id) {
+        TaskModel task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Tarefa não encontrada"));
+
+        return toDTO(task);
     }
 }

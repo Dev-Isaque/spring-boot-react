@@ -23,3 +23,18 @@ export async function listTasksByWorkspace(workspaceId) {
     if (!res.sucesso) throw new Error(res.mensagem);
     return res.dados;
 }
+
+export async function getTaskProgress(taskId) {
+    const res = await apiRequest(`/tasks/${taskId}/progress`);
+
+    if (!res.sucesso) throw new Error(res.mensagem);
+    return res.dados;
+}
+
+export async function getTaskById(taskId) {
+    const res = await apiRequest(`/tasks/${taskId}`);
+
+    if (!res.sucesso) throw new Error(res.mensagem);
+    return res.dados;
+}
+

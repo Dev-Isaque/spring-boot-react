@@ -1,10 +1,13 @@
+import { ArrowLeft, Plus, ListCheck  } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Plus, ArrowLeft } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "../../../shared/components/Button";
-import { useTaskItems } from "../hooks/useTaskItems";
 import { TaskItemsList } from "../components/TaskItemsList";
+import { TaskProgress } from "../components/TaskProgress";
+
+import { useTask } from "../hooks/useTask";
+import { useTaskItems } from "../hooks/useTaskItems";
 
 export default function TaskDetails() {
   const { taskId } = useParams();
@@ -12,6 +15,8 @@ export default function TaskDetails() {
 
   const { items, loading, error, addItem, toggleDone, remove } =
     useTaskItems(taskId);
+
+  const { task, loading: taskLoading } = useTask(taskId);
 
   const [newTitle, setNewTitle] = useState("");
   const [saving, setSaving] = useState(false);
@@ -34,21 +39,44 @@ export default function TaskDetails() {
 
   return (
     <div className="container py-3 task-details">
-      <div className="task-details__header">
-        <div className="task-details__header-left">
-          <Button
-            className="task-details__back"
-            onClick={() => navigate(-1)}
-            title="Voltar"
-          >
-            <ArrowLeft size={25} />
-          </Button>
+      <div className="task-details__header d-flex align-items-start gap-3">
+        <Button
+          className="task-details__back"
+          onClick={() => navigate(-1)}
+          title="Voltar"
+        >
+          <ArrowLeft size={25} />
+        </Button>
 
-          <div>
-            <h3 className="mb-1">Detalhes da Tarefa</h3>
-            <div className="small text-muted">Checklist / Itens</div>
+        <div className="task-hero flex-grow-1 p-4">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h2 className="fw-bold mb-2">
+                {taskLoading ? "Carregando..." : task?.title}
+              </h2>
+
+              {task && (
+                <div className="task-hero__meta">
+                  ID: {task.id?.slice(0, 6)} • Criado em{" "}
+                  {new Date(task.createdAt).toLocaleDateString()}
+                </div>
+              )}
+            </div>
+
+            <TaskProgress taskId={taskId} size="hero" showLabel />
           </div>
         </div>
+      </div>
+
+      <div className="task-section-header">
+        <div className="d-flex align-items-center gap-2">
+          <ListCheck size={20} />
+          <span className="fw-semibold">Sub-tarefas</span>
+        </div>
+
+        <span className="task-remaining-badge">
+          {items.filter((i) => !i.done).length} Restantes
+        </span>
       </div>
 
       <div className="task-details__card card p-3 mb-3">

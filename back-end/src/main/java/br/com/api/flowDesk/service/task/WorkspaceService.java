@@ -2,6 +2,7 @@ package br.com.api.flowDesk.service.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.api.flowDesk.dto.task.CreateWorkspaceRequest;
 import br.com.api.flowDesk.enums.WorkspaceType;
@@ -10,7 +11,6 @@ import br.com.api.flowDesk.model.task.WorkspaceModel;
 import br.com.api.flowDesk.model.user.UserModel;
 import br.com.api.flowDesk.repository.WorkspaceMemberRepository;
 import br.com.api.flowDesk.repository.WorkspaceRepository;
-import jakarta.transaction.Transactional;
 
 @Service
 public class WorkspaceService {
