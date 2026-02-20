@@ -14,6 +14,8 @@ import br.com.api.flowDesk.dto.task.CreateTaskRequest;
 import br.com.api.flowDesk.dto.task.LabelDTO;
 import br.com.api.flowDesk.dto.task.TaskDTO;
 import br.com.api.flowDesk.dto.taskitem.TaskProgressDTO;
+import br.com.api.flowDesk.enums.task.TaskPriority;
+import br.com.api.flowDesk.enums.task.TaskStatus;
 import br.com.api.flowDesk.model.task.TaskModel;
 import br.com.api.flowDesk.repository.LabelRepository;
 import br.com.api.flowDesk.repository.ProjectRepository;
@@ -86,6 +88,8 @@ public class TaskService {
                 task.getDueDateTime(),
                 formatEstimatedTime(task.getEstimatedTimeSeconds()),
                 task.getProject().getId(),
+                task.getCreatedBy().getId(),
+                task.getCreatedBy().getName(),
                 task.getCreatedAt(),
                 labelDTOs);
     }
@@ -108,8 +112,14 @@ public class TaskService {
         task.setTitle(dto.getTitle().trim());
         task.setDescription(dto.getDescription() != null ? dto.getDescription().trim() : null);
 
-        task.setPriority(dto.getPriority() != null ? dto.getPriority() : "MEDIUM");
-        task.setStatus("TODO");
+        task.setPriority(
+                dto.getPriority() != null
+                        ? dto.getPriority()
+                        : TaskPriority.MEDIUM);
+        task.setStatus(
+                dto.getStatus() != null
+                        ? dto.getStatus()
+                        : TaskStatus.BACKLOG);
 
         task.setDueDateTime(dto.getDueDateTime());
 

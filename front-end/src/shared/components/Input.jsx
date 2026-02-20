@@ -3,32 +3,26 @@ import { forwardRef } from "react";
 export const Input = forwardRef(function Input(
   {
     label,
-    type = "text",
-    name,
-    value,
-    onChange,
-    onKeyDown,
-    placeholder,
-    disabled = false,
+    as = "input",
     className = "",
+    children,
+    ...props
   },
   ref,
 ) {
+  const Component = as;
+
   return (
     <div className="auth-field">
-      {label && <label>{label}</label>}
+      {label && <label className="form-label">{label}</label>}
 
-      <input
+      <Component
         ref={ref}
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        placeholder={placeholder}
-        disabled={disabled}
         className={`form-control auth-input ${className}`}
-      />
+        {...props}
+      >
+        {as === "select" ? children : null}
+      </Component>
     </div>
   );
 });

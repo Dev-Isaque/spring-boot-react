@@ -10,9 +10,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
+import br.com.api.flowDesk.enums.task.TaskPriority;
+import br.com.api.flowDesk.enums.task.TaskStatus;
 import br.com.api.flowDesk.model.user.UserModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -44,8 +48,11 @@ public class TaskModel {
     @Column(columnDefinition = "text")
     private String description;
 
-    private String status;
-    private String priority;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private TaskPriority priority;
 
     @Column(name = "due_date_time")
     private LocalDateTime dueDateTime;

@@ -1,4 +1,11 @@
-import { ArrowLeft, Plus, ListCheck  } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  ListCheck,
+  ClockFading,
+  UserRound,
+  TriangleAlert,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -39,79 +46,119 @@ export default function TaskDetails() {
 
   return (
     <div className="container py-3 task-details">
-      <div className="task-details__header d-flex align-items-start gap-3">
-        <Button
-          className="task-details__back"
-          onClick={() => navigate(-1)}
-          title="Voltar"
-        >
-          <ArrowLeft size={25} />
-        </Button>
+      <div className="row">
+        <div className="col-lg-8 col-xl-9">
+          <div className="task-details__header d-flex align-items-start gap-3">
+            <div className="task-hero flex-grow-1 p-4">
+              <div className="d-flex justify-content-between align-items-center">
+                <Button
+                  className="task-details__back"
+                  onClick={() => navigate(-1)}
+                  title="Voltar"
+                >
+                  <ArrowLeft size={25} />
+                </Button>
+                <div>
+                  <h2 className="fw-bold mb-2">
+                    {taskLoading ? "Carregando..." : task?.title}
+                  </h2>
 
-        <div className="task-hero flex-grow-1 p-4">
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h2 className="fw-bold mb-2">
-                {taskLoading ? "Carregando..." : task?.title}
-              </h2>
-
-              {task && (
-                <div className="task-hero__meta">
-                  ID: {task.id?.slice(0, 6)} • Criado em{" "}
-                  {new Date(task.createdAt).toLocaleDateString()}
+                  {task && (
+                    <div className="task-hero__meta">
+                      ID: {task.id?.slice(0, 6)} • Criado em{" "}
+                      {new Date(task.createdAt).toLocaleDateString()}, Criado
+                      por {task?.created_by}
+                      {console.log(task)}
+                    </div>
+                  )}
                 </div>
-              )}
+
+                <TaskProgress taskId={taskId} size="hero" showLabel />
+              </div>
+            </div>
+          </div>
+
+          <div className="task-section-header">
+            <div className="d-flex align-items-center gap-2">
+              <ListCheck size={20} />
+              <span className="fw-semibold">Sub-tarefas</span>
             </div>
 
-            <TaskProgress taskId={taskId} size="hero" showLabel />
+            <span className="task-remaining-badge">
+              {items.filter((i) => !i.done).length} Restantes
+            </span>
+          </div>
+
+          <div className="p-3 mb-3">
+            {loading && <p>Carregando...</p>}
+            {error && <p className="auth-error">{error}</p>}
+
+            {!loading && !error && (
+              <div className="task-details__card card p-3">
+                <TaskItemsList
+                  items={items}
+                  onToggle={(item) => toggleDone(item.id, !item.done)}
+                  onDelete={(itemId) => remove(itemId)}
+                />
+              </div>
+            )}
+            <div className="task-details__card p-4 d-flex gap-2 mt-4">
+              <input
+                className="form-control"
+                placeholder="Novo item do checklist..."
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                disabled={saving}
+              />
+
+              <Button
+                className="btn-color"
+                onClick={handleAdd}
+                title="Adicionar"
+              >
+                Adicionar
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-4 col-xl-3">
+          <div className="task-properties-card p-4">
+            <h6 className="task-properties-title mb-4">PROPRIEDADES</h6>
+
+            <div className="task-property-item">
+              <TriangleAlert size={18} />
+              <div>
+                <span className="label">Prioridade</span>
+                <span className="value priority-badge">{task?.priority}</span>
+              </div>
+            </div>
+
+            <div className="task-property-item">
+              <ClockFading size={18} />
+              <div>
+                <span className="label">Status</span>
+                <span className="value status-badge">{task?.status}</span>
+              </div>
+            </div>
+
+            <div className="task-property-item">
+              <UserRound size={18} />
+              <div>
+                <span className="label">Responsável</span>
+                <span className="value">{task?.createdByName}</span>
+              </div>
+            </div>
+
+            <div className="task-property-item">
+              <CalendarDays size={18} />
+              <div>
+                <span className="label">Entrega</span>
+                <span className="value">{task?.dueDateTime}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="task-section-header">
-        <div className="d-flex align-items-center gap-2">
-          <ListCheck size={20} />
-          <span className="fw-semibold">Sub-tarefas</span>
-        </div>
-
-        <span className="task-remaining-badge">
-          {items.filter((i) => !i.done).length} Restantes
-        </span>
-      </div>
-
-      <div className="task-details__card card p-3 mb-3">
-        <div className="d-flex gap-2">
-          <input
-            className="form-control"
-            placeholder="Novo item do checklist..."
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            disabled={saving}
-          />
-
-          <Button
-            className="btn-color"
-            onClick={handleAdd}
-            disabled={!canAdd}
-            title="Adicionar"
-          >
-            <Plus size={25} />
-          </Button>
-        </div>
-      </div>
-
-      {loading && <p>Carregando...</p>}
-      {error && <p className="auth-error">{error}</p>}
-
-      {!loading && !error && (
-        <div className="task-details__card card p-3">
-          <TaskItemsList
-            items={items}
-            onToggle={(item) => toggleDone(item.id, !item.done)}
-            onDelete={(itemId) => remove(itemId)}
-          />
-        </div>
-      )}
     </div>
   );
 }

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
+import br.com.api.flowDesk.enums.task.TaskPriority;
+import br.com.api.flowDesk.enums.task.TaskStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +16,9 @@ public class CreateTaskRequest {
     private UUID projectId;
     private String title;
     private String description;
-    private String priority;
+
+    private TaskStatus status;
+    private TaskPriority priority;
 
     private LocalDateTime dueDateTime;
 

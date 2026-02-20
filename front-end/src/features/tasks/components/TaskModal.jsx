@@ -1,35 +1,31 @@
 import { useMemo, useState } from "react";
 import { Button } from "../../../shared/components/Button";
 import { Modal } from "../../../shared/components/Modal";
+import { Input } from "../../../shared/components/Input";
 import { useTasks } from "../hooks/useTasks";
 
-export function TaskModal({ projectId, labels = [] }) {
+export function TaskModal({ projectId }) {
   const { addTask } = useTasks(projectId);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("MEDIUM");
-
-  const [dueDateTime, setDueDateTime] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [estimatedTime, setEstimatedTime] = useState("");
-
-  const [selectedLabelIds, setSelectedLabelIds] = useState([]);
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
-  const canSave = useMemo(() => {
-    return projectId && projectId !== "ALL" && title.trim().length > 0;
-  }, [projectId, title]);
+  const today = new Date().toISOString().split("T")[0];
 
-  function toggleLabel(id) {
-    setSelectedLabelIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+  const canSave = useMemo(() => {
+    return (
+      projectId && projectId !== "ALL" && title.trim().length > 0 && !saving
     );
-  }
+  }, [projectId, title, saving]);
 
   async function handleSave() {
-    if (!canSave || saving) return;
+    if (!canSave) return;
 
     try {
       setSaving(true);
@@ -40,9 +36,8 @@ export function TaskModal({ projectId, labels = [] }) {
         title: title.trim(),
         description: description.trim(),
         priority,
-        dueDateTime: dueDateTime || null,
+        dueDateTime: dueDate ? `${dueDate}T00:00:00` : null,
         estimatedTime: estimatedTime || null,
-        labelIds: selectedLabelIds,
       };
 
       await addTask(payload);
@@ -50,9 +45,8 @@ export function TaskModal({ projectId, labels = [] }) {
       setTitle("");
       setDescription("");
       setPriority("MEDIUM");
-      setDueDateTime("");
+      setDueDate("");
       setEstimatedTime("");
-      setSelectedLabelIds([]);
 
       const el = document.getElementById("modalTask");
       if (el && window.bootstrap) {
@@ -84,7 +78,7 @@ export function TaskModal({ projectId, labels = [] }) {
             type="button"
             className="btn btn-primary"
             onClick={handleSave}
-            disabled={!canSave || saving}
+            disabled={!canSave}
           >
             {saving ? "Salvando..." : "Salvar"}
           </Button>
@@ -94,30 +88,32 @@ export function TaskModal({ projectId, labels = [] }) {
       {projectId === "ALL" && (
         <p className="auth-error">Selecione um projeto para criar a tarefa.</p>
       )}
+
       {error && <p className="auth-error">{error}</p>}
 
-      <input
-        type="text"
-        className="form-control mb-3"
-        placeholder="Título da tarefa"
+      <Input
+        label="Título"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         disabled={saving}
+        className="mb-2"
       />
 
-      <textarea
-        className="form-control mb-3"
-        placeholder="Descrição"
+      <Input
+        label="Descrição"
+        as="textarea"
+        rows={3}
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         disabled={saving}
+        className="mb-2"
       />
 
-      <div className="row g-2 mb-3">
-        <div className="col-md-4">
-          <label className="form-label">Prioridade</label>
-          <select
-            className="form-select"
+      <div className="row mb-2">
+        <div className="col">
+          <Input
+            label="Prioridade"
+            as="select"
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
             disabled={saving}
@@ -125,57 +121,30 @@ export function TaskModal({ projectId, labels = [] }) {
             <option value="LOW">Baixa</option>
             <option value="MEDIUM">Média</option>
             <option value="HIGH">Alta</option>
-          </select>
+          </Input>
         </div>
+      </div>
 
-        <div className="col-md-4">
-          <label className="form-label">Vencimento</label>
-          <input
-            type="datetime-local"
-            className="form-control"
-            value={dueDateTime}
-            onChange={(e) => setDueDateTime(e.target.value)}
+      <div className="row">
+        <div className="col-md-6">
+          <Input
+            label="Data de entrega"
+            type="date"
+            value={dueDate}
+            min={today}
+            onChange={(e) => setDueDate(e.target.value)}
             disabled={saving}
           />
         </div>
-
-        <div className="col-md-4">
-          <label className="form-label">Tempo (mm:ss)</label>
-          <input
-            type="text"
-            className="form-control"
+        <div className="col-md-6">
+          <Input
+            label="Tempo estimado (mm:ss)"
             placeholder="30:00"
             value={estimatedTime}
             onChange={(e) => setEstimatedTime(e.target.value)}
             disabled={saving}
           />
         </div>
-      </div>
-
-      <div>
-        <label className="form-label">Labels</label>
-
-        {labels.length === 0 ? (
-          <div className="small text-muted">Nenhuma label disponível.</div>
-        ) : (
-          <div className="d-flex flex-wrap gap-2">
-            {labels.map((l) => (
-              <button
-                key={l.id}
-                type="button"
-                className={`btn btn-sm ${
-                  selectedLabelIds.includes(l.id)
-                    ? "btn-primary"
-                    : "btn-outline-primary"
-                }`}
-                onClick={() => toggleLabel(l.id)}
-                disabled={saving}
-              >
-                {l.name}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
     </Modal>
   );
