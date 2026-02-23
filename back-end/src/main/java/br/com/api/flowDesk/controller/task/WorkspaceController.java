@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.api.flowDesk.dto.task.CreateWorkspaceRequest;
-import br.com.api.flowDesk.dto.task.WorkspaceResponse;
+import br.com.api.flowDesk.dto.task.request.CreateWorkspaceRequest;
+import br.com.api.flowDesk.dto.task.response.WorkspaceResponse;
 import br.com.api.flowDesk.model.task.WorkspaceModel;
 import br.com.api.flowDesk.model.user.UserModel;
 import br.com.api.flowDesk.service.auth.AuthTokenService;

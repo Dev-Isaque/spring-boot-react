@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.dto.task;
+package br.com.api.flowDesk.dto.task.request;
 
 import java.time.LocalDateTime;
 import java.util.Set;

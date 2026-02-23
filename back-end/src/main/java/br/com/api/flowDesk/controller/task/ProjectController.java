@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.api.flowDesk.dto.task.CreateProjectRequest;
-import br.com.api.flowDesk.dto.task.ProjectResponse;
+import br.com.api.flowDesk.dto.task.request.CreateProjectRequest;
+import br.com.api.flowDesk.dto.task.response.ProjectResponse;
 import br.com.api.flowDesk.model.task.ProjectModel;
 import br.com.api.flowDesk.model.user.UserModel;
-import br.com.api.flowDesk.repository.ProjectRepository;
+import br.com.api.flowDesk.repository.task.ProjectRepository;
 import br.com.api.flowDesk.service.auth.AuthTokenService;
 import br.com.api.flowDesk.service.task.ProjectService;
 import jakarta.validation.Valid;

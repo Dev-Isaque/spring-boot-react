@@ -2,7 +2,9 @@ package br.com.api.flowDesk.model.task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,6 +15,7 @@ import org.hibernate.annotations.UuidGenerator;
 import br.com.api.flowDesk.enums.task.TaskPriority;
 import br.com.api.flowDesk.enums.task.TaskStatus;
 import br.com.api.flowDesk.model.user.UserModel;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,6 +26,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,6 +71,9 @@ public class TaskModel {
     @ManyToOne
     @JoinColumn(name = "assigned_to")
     private UserModel assignedTo;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentModel> comments = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

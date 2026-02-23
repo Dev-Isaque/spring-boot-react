@@ -9,7 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.api.flowDesk.model.auth.AuthTokenModel;
 import br.com.api.flowDesk.model.user.UserModel;
-import br.com.api.flowDesk.repository.AuthTokenRepository;
+import br.com.api.flowDesk.repository.auth.AuthTokenRepository;
 
 @Service
 public class AuthTokenService {

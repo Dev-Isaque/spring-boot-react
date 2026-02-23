@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.repository;
+package br.com.api.flowDesk.repository.auth;
 
 import java.util.Optional;
 import java.util.UUID;

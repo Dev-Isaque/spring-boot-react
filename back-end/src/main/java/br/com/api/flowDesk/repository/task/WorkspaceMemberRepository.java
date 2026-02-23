@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.repository;
+package br.com.api.flowDesk.repository.task;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.repository;
+package br.com.api.flowDesk.repository.user;
 
 import java.util.List;
 import java.util.Optional;

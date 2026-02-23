@@ -1,4 +1,4 @@
-package br.com.api.flowDesk.dto.task;
+package br.com.api.flowDesk.dto.task.response;
 
 import java.util.UUID;
 

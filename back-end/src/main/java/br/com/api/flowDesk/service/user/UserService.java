@@ -13,9 +13,9 @@ import br.com.api.flowDesk.enums.WorkspaceType;
 import br.com.api.flowDesk.model.task.WorkspaceMemberModel;
 import br.com.api.flowDesk.model.task.WorkspaceModel;
 import br.com.api.flowDesk.model.user.UserModel;
-import br.com.api.flowDesk.repository.UserRepository;
-import br.com.api.flowDesk.repository.WorkspaceMemberRepository;
-import br.com.api.flowDesk.repository.WorkspaceRepository;
+import br.com.api.flowDesk.repository.task.WorkspaceMemberRepository;
+import br.com.api.flowDesk.repository.task.WorkspaceRepository;
+import br.com.api.flowDesk.repository.user.UserRepository;
 
 @Service
 public class UserService {

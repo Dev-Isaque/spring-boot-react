@@ -10,18 +10,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.api.flowDesk.dto.task.CreateTaskRequest;
 import br.com.api.flowDesk.dto.task.LabelDTO;
 import br.com.api.flowDesk.dto.task.TaskDTO;
+import br.com.api.flowDesk.dto.task.request.CreateTaskRequest;
 import br.com.api.flowDesk.dto.taskitem.TaskProgressDTO;
 import br.com.api.flowDesk.enums.task.TaskPriority;
 import br.com.api.flowDesk.enums.task.TaskStatus;
 import br.com.api.flowDesk.model.task.TaskModel;
-import br.com.api.flowDesk.repository.LabelRepository;
-import br.com.api.flowDesk.repository.ProjectRepository;
-import br.com.api.flowDesk.repository.TaskItemRepository;
-import br.com.api.flowDesk.repository.TaskRepository;
-import br.com.api.flowDesk.repository.UserRepository;
+import br.com.api.flowDesk.repository.task.LabelRepository;
+import br.com.api.flowDesk.repository.task.ProjectRepository;
+import br.com.api.flowDesk.repository.task.TaskItemRepository;
+import br.com.api.flowDesk.repository.task.TaskRepository;
+import br.com.api.flowDesk.repository.user.UserRepository;
 
 @Service
 public class TaskService {

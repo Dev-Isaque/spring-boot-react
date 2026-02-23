@@ -15,7 +15,7 @@ import br.com.api.flowDesk.dto.auth.LoginDTO;
 import br.com.api.flowDesk.dto.auth.UserResponseDTO;
 import br.com.api.flowDesk.model.auth.AuthTokenModel;
 import br.com.api.flowDesk.model.user.UserModel;
-import br.com.api.flowDesk.repository.AuthTokenRepository;
+import br.com.api.flowDesk.repository.auth.AuthTokenRepository;
 import br.com.api.flowDesk.service.user.UserService;
 
 @Service

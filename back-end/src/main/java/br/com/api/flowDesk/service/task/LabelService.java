@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.api.flowDesk.model.task.LabelModel;
-import br.com.api.flowDesk.repository.LabelRepository;
+import br.com.api.flowDesk.repository.task.LabelRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
