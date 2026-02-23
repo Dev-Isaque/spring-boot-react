@@ -1,7 +1,7 @@
 import { apiRequest } from "../../api/apiRequest";
 
 export async function createTask(payload) {
-    const res = await apiRequest("/tasks/register", {
+    const res = await apiRequest("/tasks/create", {
         method: "POST",
         body: JSON.stringify(payload),
     });
