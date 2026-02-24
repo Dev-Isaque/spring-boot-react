@@ -12,10 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../../shared/components/Button";
 import { TaskItemsList } from "../components/TaskItemsList";
 import { TaskProgress } from "../components/TaskProgress";
+import { TaskComment } from "../components/TaskComment";
 
 import { useTask } from "../hooks/useTask";
 import { useTaskItems } from "../hooks/useTaskItems";
-import { TaskComment } from "../components/TaskComment";
+import { useTaskProgress } from "../hooks/useTaskProgress";
 
 export default function TaskDetails() {
   const { taskId } = useParams();
@@ -25,6 +26,8 @@ export default function TaskDetails() {
     useTaskItems(taskId);
 
   const { task, loading: taskLoading } = useTask(taskId);
+
+  const { progress, reload: reloadProgress } = useTaskProgress(taskId);
 
   const [newTitle, setNewTitle] = useState("");
   const [saving, setSaving] = useState(false);
@@ -43,6 +46,11 @@ export default function TaskDetails() {
     } finally {
       setSaving(false);
     }
+  }
+
+  async function handleToggle(item) {
+    await toggleDone(item.id, !item.done);
+    await reloadProgress();
   }
 
   return (
@@ -73,7 +81,7 @@ export default function TaskDetails() {
                   )}
                 </div>
 
-                <TaskProgress taskId={taskId} size="hero" showLabel />
+                <TaskProgress progress={progress} size="hero" showLabel />
               </div>
             </div>
           </div>
@@ -97,7 +105,7 @@ export default function TaskDetails() {
               <div className="task-details__card card p-3">
                 <TaskItemsList
                   items={items}
-                  onToggle={(item) => toggleDone(item.id, !item.done)}
+                  onToggle={handleToggle}
                   onDelete={(itemId) => remove(itemId)}
                 />
               </div>

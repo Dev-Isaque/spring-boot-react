@@ -1,16 +1,14 @@
-import { useTaskProgress } from "../hooks/useTaskProgress";
-
-export function TaskProgress({ taskId, size = "default", showLabel = false }) {
-  const { progress, loading, error } = useTaskProgress(taskId);
-
+export function TaskProgress({
+  progress,
+  size = "default",
+  showLabel = false,
+}) {
   const radius = size === "hero" ? 32 : size === "large" ? 20 : 12;
   const svgSize = size === "hero" ? 80 : size === "large" ? 48 : 28;
   const strokeWidth = size === "hero" ? 4 : size === "large" ? 3.5 : 2;
   const fontSize = size === "hero" ? 14 : size === "large" ? 10 : 7;
   const textOffset = size === "hero" ? 8 : size === "large" ? 6 : 3;
 
-  if (!taskId) return null;
-  if (loading || error) return null;
   if (!progress) return null;
 
   const total = progress.totalItems ?? 0;

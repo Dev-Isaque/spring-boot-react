@@ -1,7 +1,14 @@
 import AllTasks from "../pages/AllTasks";
 import ProjectTasks from "../pages/ProjectTasks";
 
-export function TaskBody({ workspaceId, projectId, loadingWorkspace }) {
+export function TaskBody({
+  workspaceId,
+  projectId,
+  loadingWorkspace,
+  tasks,
+  loading,
+  error,
+}) {
   if (loadingWorkspace) {
     return (
       <div className="task-body-state">
@@ -30,5 +37,5 @@ export function TaskBody({ workspaceId, projectId, loadingWorkspace }) {
     );
   }
 
-  return <ProjectTasks projectId={projectId} />;
+  return <ProjectTasks tasks={tasks} loading={loading} error={error} />;
 }

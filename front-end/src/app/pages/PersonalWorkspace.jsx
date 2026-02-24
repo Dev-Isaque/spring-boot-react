@@ -11,6 +11,7 @@ import { TaskBody } from "../../features/tasks/components/TaskBody";
 import { useProjects } from "../../features/projects/hooks/useProjects";
 import { usePersonalWorkspace } from "../../features/wokspace/hooks/usePersonalWorkspace";
 import { useMe } from "../../features/user/hooks/useMe";
+import { useProjectTasks } from "../../features/tasks/hooks/useProjectTasks";
 
 function PersonalWorkspace() {
   const { usuario, errorMe } = useMe();
@@ -29,13 +30,18 @@ function PersonalWorkspace() {
     addProject,
   } = useProjects({ workspaceId });
 
+  const {
+    tasks,
+    loading: loadingTasks,
+    error: errorTasks,
+    setTasks,
+  } = useProjectTasks(projectSelecionado);
+
   const [isCreatingProject, setIsCreatingProject] = useState(false);
 
   const [labels, setLabels] = useState([]);
   const [loadingLabels, setLoadingLabels] = useState(false);
   const [errorLabels, setErrorLabels] = useState(null);
-
-  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!workspaceId) {
@@ -97,11 +103,12 @@ function PersonalWorkspace() {
     setIsCreatingProject(false);
   }
 
-  function handleCreatedTask() {
-    setRefreshKey((k) => k + 1);
+  function handleCreatedTask(newTask) {
+    setTasks((prev) => [newTask, ...prev]);
   }
 
-  const erroTela = errorMe || errorWorkspace || errorProjects || errorLabels;
+  const erroTela =
+    errorMe || errorWorkspace || errorProjects || errorLabels || errorTasks;
 
   return (
     <div className="tasks-page">
@@ -128,12 +135,20 @@ function PersonalWorkspace() {
         }
       />
 
-      <TaskBody
-        key={refreshKey}
-        workspaceId={workspaceId}
-        projectId={projectSelecionado}
-        loadingWorkspace={loadingWorkspace}
-      />
+      {loadingWorkspace ? (
+        <div className="task-body-state">
+          <p>Carregando workspace...</p>
+        </div>
+      ) : (
+        <TaskBody
+          workspaceId={workspaceId}
+          projectId={projectSelecionado}
+          loadingWorkspace={loadingWorkspace}
+          tasks={tasks}
+          loading={loadingTasks}
+          error={errorTasks}
+        />
+      )}
 
       <Button
         type="button"

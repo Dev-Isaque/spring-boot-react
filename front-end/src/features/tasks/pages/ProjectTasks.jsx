@@ -1,10 +1,7 @@
 import { useMemo, useState } from "react";
 import { TaskCard } from "../components/TaskCard";
-import { useProjectTasks } from "../hooks/useProjectTasks";
 
-function ProjectTasks({ projectId }) {
-  const { tasks, loading, error } = useProjectTasks(projectId);
-
+export default function ProjectTasks({ tasks = [], loading, error }) {
   const [activeTaskId, setActiveTaskId] = useState(null);
 
   const orderedTasks = useMemo(() => {
@@ -19,8 +16,7 @@ function ProjectTasks({ projectId }) {
     console.log("toggle", task);
   }
 
-  if (!projectId) return <p>Selecione um projeto</p>;
-  if (loading) return <p>Carregando tarefas do projeto...</p>;
+  if (loading) return <p>Carregando tarefas...</p>;
   if (error) return <p className="auth-error">{error}</p>;
   if (!tasks.length) return <p>Nenhuma tarefa neste projeto</p>;
 
@@ -38,5 +34,3 @@ function ProjectTasks({ projectId }) {
     </div>
   );
 }
-
-export default ProjectTasks;

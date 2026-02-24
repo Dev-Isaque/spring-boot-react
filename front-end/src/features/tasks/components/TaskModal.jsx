@@ -2,11 +2,9 @@ import { useMemo, useState } from "react";
 import { Button } from "../../../shared/components/Button";
 import { Modal } from "../../../shared/components/Modal";
 import { Input } from "../../../shared/components/Input";
-import { useTasks } from "../hooks/useTasks";
+import { createTask } from "../services/taskService";
 
-export function TaskModal({ projectId }) {
-  const { addTask } = useTasks(projectId);
-
+export function TaskModal({ projectId, onCreated }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("MEDIUM");
@@ -40,8 +38,14 @@ export function TaskModal({ projectId }) {
         estimatedTime: estimatedTime || null,
       };
 
-      await addTask(payload);
+      const created = await createTask(payload);
 
+      // 🔥 Atualiza lista no pai
+      if (onCreated) {
+        onCreated(created);
+      }
+
+      // Reset
       setTitle("");
       setDescription("");
       setPriority("MEDIUM");
@@ -136,6 +140,7 @@ export function TaskModal({ projectId }) {
             disabled={saving}
           />
         </div>
+
         <div className="col-md-6">
           <Input
             label="Tempo estimado (mm:ss)"
