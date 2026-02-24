@@ -21,7 +21,7 @@ export function useAuth() {
         const { token, usuario } = retorno.dados;
         
         localStorage.setItem("token", token);
-        localStorage.setItem("usuario", JSON.stringify(usuario));
+        localStorage.setItem("user", JSON.stringify(usuario));
 
         navigate("/home");
         return retorno;

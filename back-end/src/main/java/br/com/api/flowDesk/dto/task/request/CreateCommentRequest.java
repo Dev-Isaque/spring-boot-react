@@ -13,9 +13,6 @@ public class CreateCommentRequest {
     @NotNull(message = "content é obrigatório")
     private String content;
 
-    @NotNull(message = "authorId é obrigatório")
-    private UUID authorId;
-
     @NotNull(message = "taskId é obrigatório")
     private UUID taskId;
 }

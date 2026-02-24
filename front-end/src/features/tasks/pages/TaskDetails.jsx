@@ -15,6 +15,7 @@ import { TaskProgress } from "../components/TaskProgress";
 
 import { useTask } from "../hooks/useTask";
 import { useTaskItems } from "../hooks/useTaskItems";
+import { TaskComment } from "../components/TaskComment";
 
 export default function TaskDetails() {
   const { taskId } = useParams();
@@ -68,7 +69,6 @@ export default function TaskDetails() {
                       ID: {task.id?.slice(0, 6)} • Criado em{" "}
                       {new Date(task.createdAt).toLocaleDateString()}, Criado
                       por {task?.created_by}
-                      {console.log(task)}
                     </div>
                   )}
                 </div>
@@ -120,7 +120,12 @@ export default function TaskDetails() {
               </Button>
             </div>
           </div>
+
+          <div className="p-3 mb-3">
+            <TaskComment taskId={taskId} />
+          </div>
         </div>
+
         <div className="col-lg-4 col-xl-3">
           <div className="task-properties-card p-4">
             <h6 className="task-properties-title mb-4">PROPRIEDADES</h6>

@@ -1,5 +1,8 @@
 package br.com.api.flowDesk.service.task;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,17 @@ public class CommentService {
                 save.getTask().getId(),
                 save.getCreatedAt(),
                 save.getUpdatedAt());
+    }
+
+    public List<CommentDTO> listByTask(UUID taskId) {
+
+        TaskModel task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+
+        return commentRepository.findByTask(task)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     @Transactional

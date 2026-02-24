@@ -31,6 +31,7 @@ public class CommentModel {
     @UuidGenerator
     private UUID id;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @ManyToOne
@@ -47,6 +48,6 @@ public class CommentModel {
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", updatable = false)
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }

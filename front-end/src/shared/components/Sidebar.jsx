@@ -13,7 +13,7 @@ import Logo from "../assets/images/logo.png";
 
 export function Sidebar({ onNavigate }) {
   const { logout } = useAuth();
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const usuario = JSON.parse(localStorage.getItem("user"));
 
   const linkClass = ({ isActive }) =>
     `sidebar-link ${isActive ? "active" : ""}`;
