@@ -1,12 +1,4 @@
-import {
-  ArrowLeft,
-  CalendarDays,
-  ListCheck,
-  ClockFading,
-  UserRound,
-  TriangleAlert,
-  FileText
-} from "lucide-react";
+import { ArrowLeft, ListCheck, FileText } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -19,6 +11,8 @@ import { useTask } from "../hooks/useTask";
 import { useTaskItems } from "../hooks/useTaskItems";
 import { useTaskProgress } from "../hooks/useTaskProgress";
 import { TaskDescription } from "../components/TaskDescription";
+import { TaskProperty } from "../components/Taskproperty";
+import { TaskFiles } from "../components/TaskFiles";
 
 export default function TaskDetails() {
   const { taskId } = useParams();
@@ -157,40 +151,12 @@ export default function TaskDetails() {
         </div>
 
         <div className="col-lg-4 col-xl-3">
-          <div className="task-properties-card p-4">
-            <h6 className="task-properties-title mb-4">PROPRIEDADES</h6>
+          <TaskProperty task={task} />
 
-            <div className="task-property-item">
-              <TriangleAlert size={18} />
-              <div>
-                <span className="label">Prioridade</span>
-                <span className="value priority-badge">{task?.priority}</span>
-              </div>
-            </div>
+          <TaskFiles taskId={taskId} />
 
-            <div className="task-property-item">
-              <ClockFading size={18} />
-              <div>
-                <span className="label">Status</span>
-                <span className="value status-badge">{task?.status}</span>
-              </div>
-            </div>
-
-            <div className="task-property-item">
-              <UserRound size={18} />
-              <div>
-                <span className="label">Responsável</span>
-                <span className="value">{task?.createdByName}</span>
-              </div>
-            </div>
-
-            <div className="task-property-item">
-              <CalendarDays size={18} />
-              <div>
-                <span className="label">Entrega</span>
-                <span className="value">{task?.dueDateTime}</span>
-              </div>
-            </div>
+          <div className="d-flex align-items-center gap-2 mt-4 mb-3">
+            <Button className="btn-color">Concluir Tarefa</Button>
           </div>
         </div>
       </div>
