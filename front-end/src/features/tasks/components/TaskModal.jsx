@@ -40,12 +40,10 @@ export function TaskModal({ projectId, onCreated }) {
 
       const created = await createTask(payload);
 
-      // 🔥 Atualiza lista no pai
       if (onCreated) {
         onCreated(created);
       }
 
-      // Reset
       setTitle("");
       setDescription("");
       setPriority("MEDIUM");

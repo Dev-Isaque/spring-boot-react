@@ -1,13 +1,17 @@
 import { useComments } from "../hooks/useComments";
 import { CommentList } from "./comment/CommentList";
 import { CommentForm } from "./comment/CommentForm";
+import { MessagesSquare } from "lucide-react";
 
 export function TaskComment({ taskId }) {
   const { comments, addComment, loading, error } = useComments(taskId);
 
   return (
     <div className="comment-section">
-      <h5 className="mb-3">Comentários</h5>
+      <div className="d-flex align-items-center gap-2 mb-4">
+        <MessagesSquare />
+        <span className="fw-semibold">Comentários</span>
+      </div>
 
       {error && <p className="text-danger">{error}</p>}
 

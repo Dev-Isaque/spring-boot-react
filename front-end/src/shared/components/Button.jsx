@@ -1,7 +1,6 @@
 export function Button({
   type = "button",
   onClick,
-  label,
   style,
   className = "",
   disabled = false,
@@ -17,7 +16,7 @@ export function Button({
       style={style}
       {...props}
     >
-      {children || label}
+      {children}
     </button>
   );
 }

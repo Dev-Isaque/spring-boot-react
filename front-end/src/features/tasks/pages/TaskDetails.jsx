@@ -5,6 +5,7 @@ import {
   ClockFading,
   UserRound,
   TriangleAlert,
+  FileText
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,6 +18,7 @@ import { TaskComment } from "../components/TaskComment";
 import { useTask } from "../hooks/useTask";
 import { useTaskItems } from "../hooks/useTaskItems";
 import { useTaskProgress } from "../hooks/useTaskProgress";
+import { TaskDescription } from "../components/TaskDescription";
 
 export default function TaskDetails() {
   const { taskId } = useParams();
@@ -53,30 +55,42 @@ export default function TaskDetails() {
     await reloadProgress();
   }
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   return (
     <div className="container py-3 task-details">
       <div className="row">
         <div className="col-lg-8 col-xl-9">
-          <div className="task-details__header d-flex align-items-start gap-3">
-            <div className="task-hero flex-grow-1 p-4">
-              <div className="d-flex justify-content-between align-items-center">
-                <Button
-                  className="task-details__back"
-                  onClick={() => navigate(-1)}
-                  title="Voltar"
-                >
-                  <ArrowLeft size={25} />
-                </Button>
-                <div>
-                  <h2 className="fw-bold mb-2">
+          <div className="m-2">
+            <Button
+              className="task-details__back"
+              onClick={() => navigate(-1)}
+              title="Voltar"
+            >
+              <ArrowLeft size={18} />
+              <span className="ms-1">Voltar</span>
+            </Button>
+          </div>
+          <div className="task-details__header">
+            <div className="task-hero">
+              <div className="task-hero__content">
+                <div className="task-hero__info">
+                  <h1 className="task-hero__title">
                     {taskLoading ? "Carregando..." : task?.title}
-                  </h2>
+                  </h1>
 
                   {task && (
                     <div className="task-hero__meta">
                       ID: {task.id?.slice(0, 6)} • Criado em{" "}
-                      {new Date(task.createdAt).toLocaleDateString()}, Criado
-                      por {task?.created_by}
+                      {formatDate(task.createdAt)}, Criado por {task?.name}
                     </div>
                   )}
                 </div>
@@ -86,18 +100,26 @@ export default function TaskDetails() {
             </div>
           </div>
 
-          <div className="task-section-header">
-            <div className="d-flex align-items-center gap-2">
-              <ListCheck size={20} />
-              <span className="fw-semibold">Sub-tarefas</span>
+          <div className="p-2 mb-3">
+            <div className="d-flex align-items-center gap-2 mb-4">
+              <FileText />
+              <span className="fw-semibold">Descrição</span>
             </div>
-
-            <span className="task-remaining-badge">
-              {items.filter((i) => !i.done).length} Restantes
-            </span>
+            <TaskDescription description={task?.description} />
           </div>
 
-          <div className="p-3 mb-3">
+          <div className="p-2 mb-4">
+            <div className="task-section-header">
+              <div className="d-flex align-items-center gap-2">
+                <ListCheck size={20} />
+                <span className="fw-semibold">Sub-tarefas</span>
+              </div>
+
+              <span className="task-remaining-badge">
+                {items.filter((i) => !i.done).length} Restantes
+              </span>
+            </div>
+
             {loading && <p>Carregando...</p>}
             {error && <p className="auth-error">{error}</p>}
 
@@ -129,7 +151,7 @@ export default function TaskDetails() {
             </div>
           </div>
 
-          <div className="p-3 mb-3">
+          <div className="p-2 mb-3">
             <TaskComment taskId={taskId} />
           </div>
         </div>
