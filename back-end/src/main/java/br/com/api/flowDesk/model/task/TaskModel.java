@@ -84,8 +84,8 @@ public class TaskModel {
     private LocalDateTime updatedAt;
 
     @ManyToMany
-    @JoinTable(name = "task_labels", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "label_id"))
-    private Set<LabelModel> labels = new HashSet<>();
+    @JoinTable(name = "task_tags", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<TagModel> tags = new HashSet<>();
 
     public Duration getEstimatedTime() {
         return estimatedTimeSeconds != null ? Duration.ofSeconds(estimatedTimeSeconds) : null;

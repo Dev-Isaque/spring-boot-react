@@ -39,49 +39,14 @@ function PersonalWorkspace() {
 
   const [isCreatingProject, setIsCreatingProject] = useState(false);
 
-  const [labels, setLabels] = useState([]);
-  const [loadingLabels, setLoadingLabels] = useState(false);
-  const [errorLabels, setErrorLabels] = useState(null);
-
   useEffect(() => {
     if (!workspaceId) {
-      setLabels([]);
       return;
     }
 
     const controller = new AbortController();
 
-    async function loadLabels() {
-      try {
-        setLoadingLabels(true);
-        setErrorLabels(null);
 
-        const token = localStorage.getItem("token");
-
-        const res = await fetch(
-          `http://localhost:8080/labels/workspace/${workspaceId}`,
-          {
-            credentials: "include",
-            signal: controller.signal,
-            headers: {
-              Accept: "application/json",
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-          },
-        );
-
-        if (!res.ok) throw new Error("Erro ao buscar labels");
-
-        const data = await res.json();
-        setLabels(Array.isArray(data) ? data : []);
-      } catch (e) {
-        if (e.name !== "AbortError") setErrorLabels(e.message);
-      } finally {
-        setLoadingLabels(false);
-      }
-    }
-
-    loadLabels();
     return () => controller.abort();
   }, [workspaceId]);
 
@@ -108,7 +73,7 @@ function PersonalWorkspace() {
   }
 
   const erroTela =
-    errorMe || errorWorkspace || errorProjects || errorLabels || errorTasks;
+    errorMe || errorWorkspace || errorProjects || errorTasks;
 
   return (
     <div className="tasks-page">
@@ -167,9 +132,7 @@ function PersonalWorkspace() {
 
       <TaskModal
         projectId={projectSelecionado}
-        labels={labels}
         onCreated={handleCreatedTask}
-        loadingLabels={loadingLabels}
       />
     </div>
   );

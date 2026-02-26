@@ -24,6 +24,6 @@ public class CreateTaskRequest {
 
     private String estimatedTime;
 
-    private Set<UUID> labelIds;
+    private Set<UUID> tagIds;
 
 }

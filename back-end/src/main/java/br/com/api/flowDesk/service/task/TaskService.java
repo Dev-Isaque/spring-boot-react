@@ -10,15 +10,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.api.flowDesk.dto.task.LabelDTO;
+import br.com.api.flowDesk.dto.task.TagDTO;
 import br.com.api.flowDesk.dto.task.TaskDTO;
 import br.com.api.flowDesk.dto.task.request.CreateTaskRequest;
 import br.com.api.flowDesk.dto.taskitem.TaskProgressDTO;
 import br.com.api.flowDesk.enums.task.TaskPriority;
 import br.com.api.flowDesk.enums.task.TaskStatus;
 import br.com.api.flowDesk.model.task.TaskModel;
-import br.com.api.flowDesk.repository.task.LabelRepository;
 import br.com.api.flowDesk.repository.task.ProjectRepository;
+import br.com.api.flowDesk.repository.task.TagRepository;
 import br.com.api.flowDesk.repository.task.TaskItemRepository;
 import br.com.api.flowDesk.repository.task.TaskRepository;
 import br.com.api.flowDesk.repository.user.UserRepository;
@@ -33,7 +33,7 @@ public class TaskService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private LabelRepository labelRepository;
+    private TagRepository tagRepository;
     @Autowired
     private TaskItemRepository taskItemRepository;
 
@@ -72,12 +72,11 @@ public class TaskService {
 
     private TaskDTO toDTO(TaskModel task) {
 
-        var labelDTOs = task.getLabels()
+        var tagDTOs = task.getTags()
                 .stream()
-                .map(label -> new LabelDTO(
-                        label.getId(),
-                        label.getName(),
-                        label.getColor()))
+                .map(tag -> new TagDTO(
+                        tag.getId(),
+                        tag.getName()))
                 .toList();
 
         return new TaskDTO(
@@ -91,7 +90,7 @@ public class TaskService {
                 task.getCreatedBy().getId(),
                 task.getCreatedBy().getName(),
                 task.getCreatedAt(),
-                labelDTOs);
+                tagDTOs);
     }
 
     @Transactional
@@ -127,24 +126,24 @@ public class TaskService {
 
         task.setCreatedBy(user);
 
-        if (dto.getLabelIds() != null && !dto.getLabelIds().isEmpty()) {
+        if (dto.getTagIds() != null && !dto.getTagIds().isEmpty()) {
 
-            var labels = labelRepository.findAllById(dto.getLabelIds());
+            var tags = tagRepository.findAllById(dto.getTagIds());
 
-            if (labels.size() != dto.getLabelIds().size()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uma ou mais labels não existem");
+            if (tags.size() != dto.getTagIds().size()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uma ou mais tags não existem");
             }
 
             var workspaceId = project.getWorkspace().getId();
 
-            boolean anyFromOtherWorkspace = labels.stream()
+            boolean anyFromOtherWorkspace = tags.stream()
                     .anyMatch(l -> !l.getWorkspace().getId().equals(workspaceId));
 
             if (anyFromOtherWorkspace) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Label de outro workspace não é permitida");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "tag de outro workspace não é permitida");
             }
 
-            task.getLabels().addAll(labels);
+            task.getTags().addAll(tags);
         }
 
         return toDTO(taskRepository.save(task));

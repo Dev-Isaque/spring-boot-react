@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -17,10 +18,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "labels")
+@Table(name = "tags")
 @Getter
 @Setter
-public class LabelModel {
+public class TagModel {
 
     @Id
     @GeneratedValue
@@ -31,9 +32,9 @@ public class LabelModel {
     @JoinColumn(name = "workspace_id", nullable = false)
     private WorkspaceModel workspace;
 
+    @Column(nullable = false, unique = true)
     private String name;
-    private String color;
 
-    @ManyToMany(mappedBy = "labels")
+    @ManyToMany(mappedBy = "tags")
     private Set<TaskModel> tasks = new HashSet<>();
 }

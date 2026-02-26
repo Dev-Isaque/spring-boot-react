@@ -28,5 +28,5 @@ public class TaskDTO {
     private String createdByName;
 
     private LocalDateTime createdAt;
-    private List<LabelDTO> labels;
+    private List<TagDTO> tags;
 }

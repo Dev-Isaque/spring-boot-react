@@ -1,45 +1,4 @@
 /* 
-   VARIÁVEIS
- */
-:root {
-    --primary-rgb: 20, 184, 166;
-}
-
-
-/* 
-   BUTTON
- */
-.btn-color {
-    background: var(--primary-color);
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition:
-        background 0.2s ease,
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-    color: var(--text-color);
-}
-
-.btn-color:hover {
-    background: var(--primary-hover);
-    color: #fff;
-}
-
-.floating-btn {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 0.8rem 1rem;
-    border-radius: 10px;
-}
-
-/* 
    DROPDOWN
  */
 .dropdown-menu {

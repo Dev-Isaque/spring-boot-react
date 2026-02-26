@@ -1,4 +1,10 @@
-import { ArrowLeft, ListCheck, FileText } from "lucide-react";
+import {
+  ArrowLeft,
+  ListCheck,
+  FileText,
+  Share2,
+  BadgeCheck,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -155,8 +161,16 @@ export default function TaskDetails() {
 
           <TaskFiles taskId={taskId} />
 
-          <div className="d-flex align-items-center gap-2 mt-4 mb-3">
-            <Button className="btn-color">Concluir Tarefa</Button>
+          <div className="d-flex flex-column gap-2 mt-4 mb-3">
+            <Button className="btn-color w-100 p-2">
+              <BadgeCheck size={20} />{" "}
+              <span className="ms-2">Concluir Tarefa</span>
+            </Button>
+
+            <Button className="btn-secondary w-100 p-2 mt-2">
+              <Share2 size={20} />{" "}
+              <span className="ms-2">Compartilhar tarefa</span>
+            </Button>
           </div>
         </div>
       </div>

@@ -45,7 +45,7 @@ public class WorkspaceModel {
     private List<ProjectModel> projects;
 
     @OneToMany(mappedBy = "workspace")
-    private List<LabelModel> labels;
+    private List<TagModel> tags;
 
     @OneToMany(mappedBy = "workspace")
     private List<WorkspaceMemberModel> members;

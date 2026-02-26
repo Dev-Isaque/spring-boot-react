@@ -7,10 +7,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LabelDTO {
+public class TagDTO {
 
     private UUID id;
     private String name;
-    private String color;
 
 }
