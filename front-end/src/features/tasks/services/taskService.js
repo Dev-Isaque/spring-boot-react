@@ -38,3 +38,12 @@ export async function getTaskById(taskId) {
     return res.dados;
 }
 
+export async function addTagToTask(taskId, tagName) {
+    const res = await apiRequest(`/tasks/${taskId}/tags`, {
+        method: "POST",
+        body: JSON.stringify({ name: tagName }),
+    });
+
+    if (!res.sucesso) throw new Error(res.mensagem);
+    return res.dados; // Retorna a tarefa atualizada com a nova tag
+}

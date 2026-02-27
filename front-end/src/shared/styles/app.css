@@ -46,7 +46,9 @@
   background: var(--bg-color);
 }
 
-
+.app-content {
+  padding: 24px;
+}
 
 /* ========== SIDEBAR ========== */
 

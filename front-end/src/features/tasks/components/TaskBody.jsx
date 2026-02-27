@@ -8,6 +8,7 @@ export function TaskBody({
   tasks,
   loading,
   error,
+  workspaceTags,
 }) {
   if (loadingWorkspace) {
     return (
@@ -26,7 +27,7 @@ export function TaskBody({
   }
 
   if (projectId === "ALL") {
-    return <AllTasks workspaceId={workspaceId} />;
+    return <AllTasks workspaceId={workspaceId} workspaceTags={workspaceTags} />;
   }
 
   if (!projectId) {
@@ -37,5 +38,12 @@ export function TaskBody({
     );
   }
 
-  return <ProjectTasks tasks={tasks} loading={loading} error={error} />;
+  return (
+    <ProjectTasks
+      tasks={tasks}
+      loading={loading}
+      error={error}
+      workspaceTags={workspaceTags}
+    />
+  );
 }

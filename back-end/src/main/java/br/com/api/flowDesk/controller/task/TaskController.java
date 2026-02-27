@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.api.flowDesk.dto.task.TaskDTO;
+import br.com.api.flowDesk.dto.task.request.CreateTagRequest;
 import br.com.api.flowDesk.dto.task.request.CreateTaskRequest;
 import br.com.api.flowDesk.dto.taskitem.TaskProgressDTO;
 import br.com.api.flowDesk.service.auth.AuthTokenService;
@@ -53,6 +54,18 @@ public class TaskController {
     @GetMapping("/{taskId}")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable UUID taskId) {
         return ResponseEntity.ok(taskService.getTaskById(taskId));
+    }
+
+    @PostMapping("/{taskId}/tags")
+    public ResponseEntity<TaskDTO> addTagToTask(
+            @PathVariable UUID taskId,
+            @RequestBody @Valid CreateTagRequest dto,
+            @RequestHeader("Authorization") String authorization) {
+
+        String token = authorization.replace("Bearer ", "").trim();
+        var user = authTokenService.requireUserByToken(token);
+
+        return ResponseEntity.ok(taskService.addTagToTask(taskId, dto, user.getEmail()));
     }
 
 }

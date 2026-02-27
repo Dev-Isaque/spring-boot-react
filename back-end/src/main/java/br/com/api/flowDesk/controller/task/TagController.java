@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.api.flowDesk.dto.task.TagDTO;
 import br.com.api.flowDesk.dto.task.request.CreateTagRequest;
-import br.com.api.flowDesk.model.task.TagModel;
 import br.com.api.flowDesk.service.auth.AuthTokenService;
 import br.com.api.flowDesk.service.task.TagService;
 import jakarta.validation.Valid;
@@ -34,8 +33,10 @@ public class TagController {
     private AuthTokenService authTokenService;
 
     @GetMapping("/{workspaceId}/tags")
-    public List<TagModel> listByProject(@PathVariable UUID workspaceId) {
-        return tagService.listByProject(workspaceId);
+    public ResponseEntity<List<TagDTO>> listByWorkspace(
+            @PathVariable UUID workspaceId) {
+
+        return ResponseEntity.ok(tagService.listByWorkspace(workspaceId));
     }
 
     @PostMapping("/{workspaceId}/tags")
@@ -50,5 +51,4 @@ public class TagController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(tagService.create(workspaceId, dto, user.getEmail()));
     }
-
 }

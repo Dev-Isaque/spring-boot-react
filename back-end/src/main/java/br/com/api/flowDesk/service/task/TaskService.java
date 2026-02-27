@@ -12,10 +12,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.api.flowDesk.dto.task.TagDTO;
 import br.com.api.flowDesk.dto.task.TaskDTO;
+import br.com.api.flowDesk.dto.task.request.CreateTagRequest;
 import br.com.api.flowDesk.dto.task.request.CreateTaskRequest;
 import br.com.api.flowDesk.dto.taskitem.TaskProgressDTO;
 import br.com.api.flowDesk.enums.task.TaskPriority;
 import br.com.api.flowDesk.enums.task.TaskStatus;
+import br.com.api.flowDesk.model.task.TagModel;
 import br.com.api.flowDesk.model.task.TaskModel;
 import br.com.api.flowDesk.repository.task.ProjectRepository;
 import br.com.api.flowDesk.repository.task.TagRepository;
@@ -36,6 +38,8 @@ public class TaskService {
     private TagRepository tagRepository;
     @Autowired
     private TaskItemRepository taskItemRepository;
+    @Autowired
+    private TagService tagService;
 
     public List<TaskDTO> listByProject(UUID projectId) {
         return taskRepository.findByProjectId(projectId)
@@ -177,5 +181,21 @@ public class TaskService {
                         HttpStatus.NOT_FOUND, "Tarefa não encontrada"));
 
         return toDTO(task);
+    }
+
+    @Transactional
+    public TaskDTO addTagToTask(UUID taskId, CreateTagRequest tagDto, String userEmail) {
+        TaskModel task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada"));
+
+        UUID workspaceId = task.getProject().getWorkspace().getId();
+
+        TagDTO tagResult = tagService.create(workspaceId, tagDto, userEmail);
+
+        TagModel tagEntity = tagRepository.findById(tagResult.getId()).orElseThrow();
+
+        task.getTags().add(tagEntity);
+
+        return toDTO(taskRepository.save(task));
     }
 }

@@ -1,7 +1,12 @@
 import { useMemo, useState } from "react";
 import { TaskCard } from "../components/TaskCard";
 
-export default function ProjectTasks({ tasks = [], loading, error }) {
+export default function ProjectTasks({
+  tasks = [],
+  loading,
+  error,
+  workspaceTags = [],
+}) {
   const [activeTaskId, setActiveTaskId] = useState(null);
 
   const orderedTasks = useMemo(() => {
@@ -29,6 +34,7 @@ export default function ProjectTasks({ tasks = [], loading, error }) {
           onToggle={handleToggle}
           activeTaskId={activeTaskId}
           setActiveTaskId={setActiveTaskId}
+          workspaceTags={workspaceTags}
         />
       ))}
     </div>

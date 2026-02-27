@@ -12,12 +12,14 @@ import { useProjects } from "../../features/projects/hooks/useProjects";
 import { usePersonalWorkspace } from "../../features/wokspace/hooks/usePersonalWorkspace";
 import { useMe } from "../../features/user/hooks/useMe";
 import { useProjectTasks } from "../../features/tasks/hooks/useProjectTasks";
+import { useWorkspaceTags } from "../../features/wokspace/hooks/useWorkspaceTags";
 
 function PersonalWorkspace() {
   const { usuario, errorMe } = useMe();
 
   const { workspace, loadingWorkspace, errorWorkspace } =
     usePersonalWorkspace();
+
   const workspaceId = workspace?.id;
 
   const {
@@ -46,7 +48,6 @@ function PersonalWorkspace() {
 
     const controller = new AbortController();
 
-
     return () => controller.abort();
   }, [workspaceId]);
 
@@ -72,8 +73,9 @@ function PersonalWorkspace() {
     setTasks((prev) => [newTask, ...prev]);
   }
 
-  const erroTela =
-    errorMe || errorWorkspace || errorProjects || errorTasks;
+  const erroTela = errorMe || errorWorkspace || errorProjects || errorTasks;
+
+  const { tags, loadingTags } = useWorkspaceTags(workspaceId);
 
   return (
     <div className="tasks-page">
@@ -108,10 +110,10 @@ function PersonalWorkspace() {
         <TaskBody
           workspaceId={workspaceId}
           projectId={projectSelecionado}
-          loadingWorkspace={loadingWorkspace}
           tasks={tasks}
           loading={loadingTasks}
           error={errorTasks}
+          workspaceTags={tags}
         />
       )}
 
@@ -130,10 +132,7 @@ function PersonalWorkspace() {
         <Plus /> Nova Tarefa
       </Button>
 
-      <TaskModal
-        projectId={projectSelecionado}
-        onCreated={handleCreatedTask}
-      />
+      <TaskModal projectId={projectSelecionado} onCreated={handleCreatedTask} />
     </div>
   );
 }

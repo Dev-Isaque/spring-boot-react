@@ -8,28 +8,46 @@ import {
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Button } from "../../../shared/components/Button";
 import { TaskItemsList } from "../components/TaskItemsList";
 import { TaskProgress } from "../components/TaskProgress";
 import { TaskComment } from "../components/TaskComment";
+import { TaskDescription } from "../components/TaskDescription";
+import { TaskProperty } from "../components/Taskproperty";
+import { TaskFiles } from "../components/TaskFiles";
 
 import { useTask } from "../hooks/useTask";
 import { useTaskItems } from "../hooks/useTaskItems";
 import { useTaskProgress } from "../hooks/useTaskProgress";
-import { TaskDescription } from "../components/TaskDescription";
-import { TaskProperty } from "../components/Taskproperty";
-import { TaskFiles } from "../components/TaskFiles";
+import { useTaskTags } from "../hooks/useTaskTags";
+
+import { Button } from "../../../shared/components/Button";
 
 export default function TaskDetails() {
   const { taskId } = useParams();
   const navigate = useNavigate();
 
-  const { items, loading, error, addItem, toggleDone, remove } =
-    useTaskItems(taskId);
-
-  const { task, loading: taskLoading } = useTask(taskId);
-
+  const {
+    task: initialTask,
+    loading: taskLoading,
+    reload: reloadTask,
+  } = useTask(taskId);
   const { progress, reload: reloadProgress } = useTaskProgress(taskId);
+  const {
+    items,
+    loading: itemsLoading,
+    error,
+    addItem,
+    toggleDone,
+    remove,
+  } = useTaskItems(taskId);
+
+  const {
+    taskWithTags,
+    workspaceTags,
+    associateTag,
+    isProcessing,
+    loadingTags,
+  } = useTaskTags(initialTask, initialTask?.workspaceId);
 
   const [newTitle, setNewTitle] = useState("");
   const [saving, setSaving] = useState(false);
@@ -45,6 +63,7 @@ export default function TaskDetails() {
       setSaving(true);
       await addItem({ title: newTitle.trim() });
       setNewTitle("");
+      await reloadProgress();
     } finally {
       setSaving(false);
     }
@@ -65,36 +84,45 @@ export default function TaskDetails() {
     });
   };
 
+  if (taskLoading) {
+    return (
+      <div className="container-fluid py-5 text-center">
+        <p>Carregando tarefa...</p>
+      </div>
+    );
+  }
+
+  if (!initialTask) {
+    return (
+      <div className="container-fluid py-5 text-center">
+        <p>Tarefa não encontrada.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="container py-3 task-details">
+    <div className="container-fluid py-3 task-details">
       <div className="row">
         <div className="col-lg-8 col-xl-9">
           <div className="m-2">
-            <Button
-              className="task-details__back"
-              onClick={() => navigate(-1)}
-              title="Voltar"
-            >
+            <Button className="task-details__back" onClick={() => navigate(-1)}>
               <ArrowLeft size={18} />
               <span className="ms-1">Voltar</span>
             </Button>
           </div>
+
           <div className="task-details__header">
             <div className="task-hero">
               <div className="task-hero__content">
                 <div className="task-hero__info">
                   <h1 className="task-hero__title">
-                    {taskLoading ? "Carregando..." : task?.title}
+                    {taskWithTags?.title || initialTask.title}
                   </h1>
-
-                  {task && (
-                    <div className="task-hero__meta">
-                      ID: {task.id?.slice(0, 6)} • Criado em{" "}
-                      {formatDate(task.createdAt)}, Criado por {task?.name}
-                    </div>
-                  )}
+                  <div className="task-hero__meta">
+                    ID: {initialTask.id?.slice(0, 6)} • Criado em{" "}
+                    {formatDate(initialTask.createdAt)}, por {initialTask?.name}
+                  </div>
                 </div>
-
                 <TaskProgress progress={progress} size="hero" showLabel />
               </div>
             </div>
@@ -105,7 +133,7 @@ export default function TaskDetails() {
               <FileText />
               <span className="fw-semibold">Descrição</span>
             </div>
-            <TaskDescription description={task?.description} />
+            <TaskDescription description={initialTask.description} />
           </div>
 
           <div className="p-2 mb-4">
@@ -114,21 +142,18 @@ export default function TaskDetails() {
                 <ListCheck size={20} />
                 <span className="fw-semibold">Sub-tarefas</span>
               </div>
-
               <span className="task-remaining-badge">
                 {items.filter((i) => !i.done).length} Restantes
               </span>
             </div>
-
-            {loading && <p>Carregando...</p>}
+            {itemsLoading && <p>Carregando...</p>}
             {error && <p className="auth-error">{error}</p>}
-
-            {!loading && !error && (
+            {!itemsLoading && !error && (
               <div className="task-details__card card p-3">
                 <TaskItemsList
                   items={items}
                   onToggle={handleToggle}
-                  onDelete={(itemId) => remove(itemId)}
+                  onDelete={remove}
                 />
               </div>
             )}
@@ -140,11 +165,10 @@ export default function TaskDetails() {
                 onChange={(e) => setNewTitle(e.target.value)}
                 disabled={saving}
               />
-
               <Button
                 className="btn-color"
                 onClick={handleAdd}
-                title="Adicionar"
+                disabled={!canAdd}
               >
                 Adicionar
               </Button>
@@ -157,18 +181,23 @@ export default function TaskDetails() {
         </div>
 
         <div className="col-lg-4 col-xl-3">
-          <TaskProperty task={task} />
+          <TaskProperty
+            task={taskWithTags || initialTask}
+            workspaceTags={workspaceTags}
+            onAddTag={associateTag}
+            isProcessing={isProcessing}
+            loadingTags={loadingTags}
+          />
 
           <TaskFiles taskId={taskId} />
 
           <div className="d-flex flex-column gap-2 mt-4 mb-3">
             <Button className="btn-color w-100 p-2">
-              <BadgeCheck size={20} />{" "}
+              <BadgeCheck size={20} />
               <span className="ms-2">Concluir Tarefa</span>
             </Button>
-
             <Button className="btn-secondary w-100 p-2 mt-2">
-              <Share2 size={20} />{" "}
+              <Share2 size={20} />
               <span className="ms-2">Compartilhar tarefa</span>
             </Button>
           </div>

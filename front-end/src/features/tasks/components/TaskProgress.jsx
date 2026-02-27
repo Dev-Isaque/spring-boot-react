@@ -13,10 +13,13 @@ export function TaskProgress({
 
   const total = progress.totalItems ?? 0;
   const completed = progress.completedItems ?? 0;
-  const percentage = Math.min(
+
+  const rawPercentage = Math.min(
     100,
     Math.max(0, Number(progress.percentage) || 0),
   );
+
+  const percentage = Number(rawPercentage.toFixed(2));
 
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;

@@ -262,7 +262,7 @@
 
 /* --- Progress Circle Conic (Hero standalone) --- */
 .progress-circle {
-    --size: 85px;
+    --size: 100px;
     width: var(--size);
     height: var(--size);
     border-radius: 50%;
